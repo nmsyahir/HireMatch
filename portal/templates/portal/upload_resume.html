@@ -1,0 +1,229 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Upload Resume{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/upload_resume.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="upload-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Upload Resume
+        </h1>
+
+        <p class="mb-0">
+            {% if pending_job %}
+                Upload your resume to continue applying for {{ pending_job.title }}.
+            {% else %}
+                Upload your latest resume to receive personalized job recommendations.
+            {% endif %}
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="upload-section py-5">
+
+    <div class="container">
+
+        <div class="upload-card">
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <!-- RESUME FILE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        Resume File
+
+                    </label>
+
+                    <div
+                        class="drop-zone"
+                        id="dropZone"
+                    >
+
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                        <h5>
+                            Drag & Drop Resume Here
+                        </h5>
+
+                        <p>
+                            Or click to browse your PDF file
+                        </p>
+
+                        <span class="upload-note">
+                            PDF files only
+                        </span>
+
+                        <input
+                            type="file"
+                            name="resume_file"
+                            id="resumeInput"
+                            accept=".pdf"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="fileName"
+                        class="selected-file"
+                    >
+
+                        No file selected
+
+                    </div>
+
+                </div>
+
+                <!-- SKILLS -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Skills (Optional)
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="skills"
+                        class="form-control custom-input"
+                        placeholder="Python, Django, SQL, JavaScript"
+                    >
+
+                </div>
+
+                <!-- EXPERIENCE -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Experience (Optional)
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="experience_years"
+                        class="form-control custom-input"
+                        placeholder="2 Years Experience"
+                    >
+
+                </div>
+
+                <!-- EDUCATION -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        Education (Optional)
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="education"
+                        class="form-control custom-input"
+                        placeholder="Bachelor of Information Technology"
+                    >
+
+                </div>
+
+                <!-- BUTTON -->
+                <button
+                    type="submit"
+                    class="btn-upload"
+                >
+
+                    <i class="bi bi-upload me-2"></i>
+
+                    Upload & Get Recommendations
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+{% if resume_required %}
+Swal.fire({
+    icon: 'info',
+    title: 'Resume Required',
+    text: 'Please upload your resume before applying for this job.',
+    confirmButtonColor: '#16325c'
+});
+{% endif %}
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('resumeInput');
+const fileName = document.getElementById('fileName');
+
+fileInput.addEventListener('change', function() {
+
+    if (this.files.length > 0) {
+
+        fileName.innerHTML =
+            '<i class="bi bi-file-earmark-pdf-fill me-2"></i>' +
+            this.files[0].name;
+
+    }
+
+});
+
+dropZone.addEventListener('dragover', function(e) {
+
+    e.preventDefault();
+
+    dropZone.classList.add('dragover');
+
+});
+
+dropZone.addEventListener('dragleave', function() {
+
+    dropZone.classList.remove('dragover');
+
+});
+
+dropZone.addEventListener('drop', function(e) {
+
+    e.preventDefault();
+
+    dropZone.classList.remove('dragover');
+
+    fileInput.files = e.dataTransfer.files;
+
+    if (fileInput.files.length > 0) {
+
+        fileName.innerHTML =
+            '<i class="bi bi-file-earmark-pdf-fill me-2"></i>' +
+            fileInput.files[0].name;
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

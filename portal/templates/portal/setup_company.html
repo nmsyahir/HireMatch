@@ -1,0 +1,164 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Setup Company{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/setup_company.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Setup Company
+        </h1>
+
+        <p class="mb-0">
+            Create your company profile to start posting jobs.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN SECTION -->
+<div class="setup-company-section py-5">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+                <!-- CARD -->
+                <div class="setup-company-card">
+
+                    <div class="setup-company-body">
+
+                        <!-- TITLE -->
+                        <h2 class="setup-title">
+                            Create Company Profile
+                        </h2>
+
+                        <p class="setup-subtitle">
+                            Setup your company information to start posting jobs and managing applicants.
+                        </p>
+
+                        <!-- FORM -->
+                        <form method="POST"
+                              enctype="multipart/form-data">
+
+                            {% csrf_token %}
+
+                            <!-- COMPANY NAME -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Company Name
+                                </label>
+
+                                <input type="text"
+                                       name="name"
+                                       class="form-control"
+                                       placeholder="Enter company name"
+                                       required>
+
+                            </div>
+
+                            <!-- INDUSTRY -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Industry
+                                </label>
+
+                                <input type="text"
+                                       name="industry"
+                                       class="form-control"
+                                       placeholder="Example: Information Technology">
+
+                            </div>
+
+                            <!-- LOCATION -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Company Location
+                                </label>
+
+                                <input type="text"
+                                       name="location"
+                                       class="form-control"
+                                       placeholder="Example: Kuala Lumpur">
+
+                            </div>
+
+                            <!-- WEBSITE -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Website
+                                </label>
+
+                                <input type="url"
+                                       name="website"
+                                       class="form-control"
+                                       placeholder="https://example.com">
+
+                            </div>
+
+                            <!-- LOGO -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Company Logo
+                                </label>
+
+                                <input type="file"
+                                       name="logo"
+                                       class="form-control">
+
+                            </div>
+
+                            <!-- DESCRIPTION -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Company Description
+                                </label>
+
+                                <textarea name="description"
+                                          rows="5"
+                                          class="form-control"
+                                          placeholder="Describe your company"></textarea>
+
+                            </div>
+
+                            <!-- BUTTON -->
+                            <button type="submit"
+                                    class="btn-company-create w-100">
+
+                                Create Company
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

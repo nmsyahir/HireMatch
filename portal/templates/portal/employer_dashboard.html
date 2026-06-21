@@ -1,0 +1,311 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Employer Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/employer_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">Welcome, {{ user.first_name }}</h1>
+        <p class="mb-0">Manage hiring performance, applicants, and job status.</p>
+    </div>
+</section>
+
+<div class="dashboard-section py-5">
+    <div class="container">
+
+        <div class="company-hero-card dashboard-overview mb-5">
+            <div class="company-left">
+                {% if company.logo %}
+                    <img src="{{ company.logo.url }}" class="company-hero-logo" alt="{{ company.name }} logo">
+                {% else %}
+                    <div class="company-hero-placeholder">{{ company.name|slice:":1" }}</div>
+                {% endif %}
+                <div class="company-info">
+                    <h2 class="company-name"><a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a></h2>
+                    <p class="company-industry">{{ company.industry }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="dashboard-stat-card stat-blue">
+                    <div class="stat-icon"><i class="bi bi-briefcase"></i></div>
+                    <div>
+                        <div class="stat-label">Jobs Posted</div>
+                        <div class="stat-number">{{ total_jobs|default:"0" }}</div>
+                        <div class="stat-text">All job postings</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-stat-card stat-green">
+                    <div class="stat-icon"><i class="bi bi-door-open"></i></div>
+                    <div>
+                        <div class="stat-label">Open Jobs</div>
+                        <div class="stat-number">{{ open_jobs|default:"0" }}</div>
+                        <div class="stat-text">Accepting applicants</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-stat-card stat-gold">
+                    <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+                    <div>
+                        <div class="stat-label">Filled Jobs</div>
+                        <div class="stat-number">{{ filled_jobs|default:"0" }}</div>
+                        <div class="stat-text">Vacancies completed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-stat-card stat-purple">
+                    <div class="stat-icon"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="stat-label">Applicants</div>
+                        <div class="stat-number">{{ total_applicants|default:"0" }}</div>
+                        <div class="stat-text">Total received</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="dashboard-action-card chart-card h-100">
+                    <div class="card-heading">
+                        <div>
+                            <span>Hiring Funnel</span>
+                            <h5>Applicants by Status</h5>
+                        </div>
+                    </div>
+                    <div class="chart-visual">
+                        <canvas id="applicantStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="dashboard-action-card chart-card h-100">
+                    <div class="card-heading">
+                        <div>
+                            <span>Vacancy Health</span>
+                            <h5>Jobs Status</h5>
+                        </div>
+                    </div>
+                    <div class="chart-visual">
+                        <canvas id="jobStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-action-card table-card mb-5">
+            <div class="card-heading">
+                <div>
+                    <span>Performance</span>
+                    <h5>Top Jobs by Applications</h5>
+                </div>
+            </div>
+            <div class="table-responsive mt-3">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Job</th>
+                            <th>Status</th>
+                            <th>Applicants</th>
+                            <th>Vacancies</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in top_jobs %}
+                        <tr>
+                            <td>{{ job.title }}</td>
+                            <td><span class="status-text status-{{ job.display_status }}">{{ job.display_status|title }}</span></td>
+                            <td>{{ job.applicant_total }}</td>
+                            <td>{{ job.accepted_count }} / {{ job.vacancies }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration compact" alt="No job data">
+                                <span class="text-muted">No job data yet.</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="{% url 'post_job' %}" class="text-decoration-none">
+                    <div class="dashboard-action-card quick-action-card">
+                        <div class="quick-action-icon"><i class="bi bi-plus-lg"></i></div>
+                        <h5>Post Job</h5>
+                        <p>Create and publish new job vacancies for applicants.</p>
+                        <span class="action-link">Create</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'manage_jobs' %}" class="text-decoration-none">
+                    <div class="dashboard-action-card quick-action-card">
+                        <div class="quick-action-icon"><i class="bi bi-kanban"></i></div>
+                        <h5>Manage Jobs</h5>
+                        <p>Edit job postings, close filled roles, and monitor progress.</p>
+                        <span class="action-link">Manage</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'view_applicants' %}" class="text-decoration-none">
+                    <div class="dashboard-action-card quick-action-card">
+                        <div class="quick-action-icon"><i class="bi bi-person-lines-fill"></i></div>
+                        <h5>View Applicants</h5>
+                        <p>Rank applicants using resume match scores and take action.</p>
+                        <span class="action-link">View</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const applicantStatusData = [
+        {{ pending_applicants|default:0 }},
+        {{ accepted_applicants|default:0 }},
+        {{ rejected_applicants|default:0 }}
+    ];
+
+    const chartDefaults = {
+        color: '#16325c',
+        font: {
+            family: "'Segoe UI', sans-serif",
+            size: 12,
+            weight: '500'
+        }
+    };
+
+    Chart.defaults.color = chartDefaults.color;
+    Chart.defaults.font = chartDefaults.font;
+
+    const doughnutCenterText = {
+        id: 'doughnutCenterText',
+        afterDraw(chart) {
+            const { ctx, chartArea } = chart;
+            const total = applicantStatusData.reduce((sum, value) => sum + value, 0);
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#16325c';
+            ctx.font = "700 28px 'Segoe UI', sans-serif";
+            ctx.fillText(total, (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2 - 8);
+            ctx.fillStyle = '#7a8799';
+            ctx.font = "500 11px 'Segoe UI', sans-serif";
+            ctx.fillText('APPLICANTS', (chartArea.left + chartArea.right) / 2, (chartArea.top + chartArea.bottom) / 2 + 16);
+            ctx.restore();
+        }
+    };
+
+    new Chart(document.getElementById('applicantStatusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Pending', 'Accepted', 'Rejected'],
+            datasets: [{
+                data: applicantStatusData,
+                backgroundColor: ['#f4b400', '#16a34a', '#e25569'],
+                borderColor: '#ffffff',
+                borderWidth: 2,
+                borderRadius: 3,
+                hoverOffset: 8
+            }]
+        },
+        plugins: [doughnutCenterText],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            layout: { padding: 6 },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { boxWidth: 9, usePointStyle: true, padding: 18, pointStyle: 'circle' }
+                },
+                tooltip: {
+                    backgroundColor: '#16325c',
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        title() {
+                            return '';
+                        },
+                        label(context) {
+                            return `${context.label}: ${context.parsed}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('jobStatusChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Open', 'Filled', 'Closed'],
+            datasets: [{
+                label: 'Jobs',
+                data: [
+                    {{ open_jobs|default:0 }},
+                    {{ filled_jobs|default:0 }},
+                    {{ closed_jobs|default:0 }}
+                ],
+                backgroundColor: ['#1f4e8c', '#4f83c2', '#9eb8d8'],
+                borderWidth: 0,
+                borderRadius: 8,
+                borderSkipped: false,
+                maxBarThickness: 46,
+                categoryPercentage: 0.62
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#16325c',
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#16325c' }
+                },
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 15,
+                    grid: { color: 'rgba(31,78,140,0.09)', drawBorder: false },
+                    border: { display: false },
+                    ticks: { stepSize: 5, precision: 0, color: '#64748b', padding: 8 }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

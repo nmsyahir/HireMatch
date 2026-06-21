@@ -1,0 +1,722 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Post Job{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/post_job.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Create New Job Posting
+        </h1>
+
+        <p class="mb-0">
+            Publish opportunities and connect with qualified candidates faster.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="post-job-section py-5">
+
+    <div class="container">
+
+        <!-- COMPANY HERO -->
+        <div class="company-hero-card mb-5">
+
+            <div class="company-left">
+
+                {% if company.logo %}
+
+                <img
+                    src="{{ company.logo.url }}"
+                    class="company-hero-logo"
+                    alt="Company Logo"
+                >
+
+                {% else %}
+
+                <div class="company-hero-placeholder">
+                    {{ company.name|slice:":1" }}
+                </div>
+
+                {% endif %}
+
+                <div class="company-info">
+
+                    <h2 class="company-name">
+                        <a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a>
+                    </h2>
+
+                    <p class="company-industry">
+                        {{ company.industry }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CONTENT -->
+        <div class="row g-4">
+
+            <!-- LEFT -->
+            <div class="col-lg-8">
+
+                <div class="post-job-card">
+
+                    <form method="POST" id="postJobForm">
+
+                        {% csrf_token %}
+
+                        <!-- JOB INFO -->
+                        <div class="form-section">
+
+                            <div class="section-header-wrapper">
+
+                                <div class="section-header-text">
+
+                                    <h4>Job Details</h4>
+
+                                    <p>
+                                        Add the information applicants need to understand this role.
+                                    </p>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="modern-info-btn"
+                                    onclick="showJobTips()"
+                                >
+
+                                    <i class="bi bi-info-lg"></i>
+
+                                </button>
+
+                            </div>
+
+                            <!-- JOB TITLE -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Job Title
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="title"
+                                    class="form-control custom-input"
+                                    placeholder="e.g Backend Developer"
+                                    required
+                                >
+
+                            </div>
+
+                            <!-- DESCRIPTION -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Job Description
+                                </label>
+
+                                <textarea
+                                    name="description"
+                                    rows="7"
+                                    class="form-control custom-input"
+                                    placeholder="Describe responsibilities, technologies, and expectations..."
+                                    required
+                                ></textarea>
+
+                            </div>
+
+                            <!-- ROW -->
+                            <div class="row">
+
+                                <!-- LOCATION -->
+                                <div class="col-md-4 mb-4">
+
+                                    <label class="form-label">
+                                        Location
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        class="form-control custom-input"
+                                        placeholder="e.g Cyberjaya"
+                                    >
+
+                                </div>
+
+                                <!-- JOB TYPE -->
+                                <div class="col-md-4 mb-4">
+
+                                    <label class="form-label">
+                                        Job Type
+                                    </label>
+
+                                    <select
+                                        name="job_type"
+                                        class="form-select custom-input"
+                                    >
+
+                                        <option value="">
+                                            Select Type
+                                        </option>
+
+                                        <option value="Full-Time">
+                                            Full-Time
+                                        </option>
+
+                                        <option value="Part-Time">
+                                            Part-Time
+                                        </option>
+
+                                        <option value="Internship">
+                                            Internship
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <!-- SALARY -->
+                                <div class="col-md-4 mb-4">
+
+                                    <label class="form-label">
+                                        Salary
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="salary"
+                                        class="form-control custom-input"
+                                        placeholder="e.g RM4500"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">
+                                        Minimum Salary
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="salary_min"
+                                        class="form-control custom-input"
+                                        step="100"
+                                        placeholder="e.g 3000"
+                                    >
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">
+                                        Maximum Salary
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="salary_max"
+                                        class="form-control custom-input"
+                                        step="100"
+                                        placeholder="e.g 5000"
+                                    >
+                                </div>
+
+                            </div>
+
+                            <!-- VACANCIES -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Number of Vacancies
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="vacancies"
+                                    class="form-control custom-input"
+                                    min="1"
+                                    value="1"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                        <!-- REQUIREMENTS -->
+                        <div class="form-section mt-5">
+
+                            <div class="section-header-wrapper">
+
+                                <div class="section-header-text">
+
+                                    <h4>Candidate Requirements</h4>
+
+                                    <p>
+                                        Define skills, education, and experience requirements clearly.
+                                    </p>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="modern-info-btn"
+                                    onclick="showRequirementTips()"
+                                >
+
+                                    <i class="bi bi-lightbulb"></i>
+
+                                </button>
+
+                            </div>
+
+                            <!-- SKILLS -->
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Skills Required
+                                </label>
+
+                                <textarea
+                                    name="skills_required"
+                                    rows="3"
+                                    class="form-control custom-input"
+                                    placeholder="Python, Django, SQL, REST API"
+                                ></textarea>
+
+                            </div>
+
+                            <!-- ROW -->
+                            <div class="row">
+
+                                <!-- EXPERIENCE -->
+                                <div class="col-md-6 mb-4">
+
+                                    <label class="form-label">
+                                        Experience Required
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="experience_required"
+                                        class="form-control custom-input"
+                                        placeholder="e.g 2 years"
+                                    >
+
+                                </div>
+
+                                <!-- EDUCATION -->
+                                <div class="col-md-6 mb-4">
+
+                                    <label class="form-label">
+                                        Education Required
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="education_required"
+                                        class="form-control custom-input"
+                                        placeholder="e.g Bachelor Degree"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="mt-4">
+
+                            <button
+                                type="submit"
+                                class="btn-post-job"
+                            >
+
+                                Publish Job Posting
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-4">
+
+                <div class="preview-card">
+
+                    <div class="preview-header">
+
+                        <div>
+
+                            <div class="preview-badge">
+                                Live Preview
+                            </div>
+
+                            <h4 class="preview-title">
+                                Job Preview
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                    <p class="preview-subtitle">
+                        This is how your posting may appear to applicants.
+                    </p>
+
+                    <!-- PREVIEW CARD -->
+                    <div class="preview-job-card">
+
+                        <!-- TOP -->
+                        <div class="preview-top">
+
+                            {% if company.logo %}
+
+                            <img
+                                src="{{ company.logo.url }}"
+                                class="preview-logo"
+                                alt="Logo"
+                            >
+
+                            {% else %}
+
+                            <div class="preview-logo-placeholder">
+                                {{ company.name|slice:":1" }}
+                            </div>
+
+                            {% endif %}
+
+                            <div class="preview-info">
+
+                                <h5 class="preview-job-title">
+                                    Backend Developer
+                                </h5>
+
+                                <p class="preview-company">
+                                    {{ company.name }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- TAGS -->
+                        <div class="preview-tags">
+
+                            <span>
+                                Full-Time
+                            </span>
+
+                            <span>
+                                Cyberjaya
+                            </span>
+
+                            <span>
+                                RM4500
+                            </span>
+
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <p class="preview-text">
+
+                            {{ company.name }} is looking for a Backend Developer responsible for developing scalable backend systems and maintaining web application performance.
+
+                        </p>
+
+                        <!-- FOOTER -->
+                        <div class="preview-footer">
+
+                            <button class="preview-btn">
+                                View Details
+                            </button>
+
+                            <button class="preview-save-btn">
+                                <i class="bi bi-heart"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- JOB INFO POPUP -->
+<script>
+
+function showJobTips() {
+
+    Swal.fire({
+
+        title: 'Job Information Guide',
+
+        html: `
+
+<div class="modern-popup-wrapper">
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-briefcase"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Professional Job Title</h6>
+
+<p>
+Use clear and searchable titles such as Software Engineer, Backend Developer, or UI/UX Designer.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-file-earmark-text"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Detailed Description</h6>
+
+<p>
+Explain responsibilities, technologies used, project scope, and working expectations clearly.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-geo-alt"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Job Location & Type</h6>
+
+<p>
+Specify work location and employment type such as Full-Time, Part-Time, or Internship.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-cash-stack"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Salary Transparency</h6>
+
+<p>
+Salary visibility improves trust and attracts more relevant applicants.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+        `,
+
+        width: 760,
+
+        background: '#ffffff',
+
+        confirmButtonText: 'Understood',
+
+        confirmButtonColor: '#1f3f79',
+
+        customClass: {
+
+            popup: 'modern-swal-popup',
+
+            title: 'modern-swal-title'
+
+        }
+
+    });
+
+}
+
+</script>
+
+<!-- REQUIREMENT POPUP -->
+<script>
+
+function showRequirementTips() {
+
+    Swal.fire({
+
+        title: 'Candidate Requirement Guide',
+
+        html: `
+
+<div class="modern-popup-wrapper">
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-tools"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Technical Skills</h6>
+
+<p>
+Include programming languages, frameworks, systems, and technical tools required for the role.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-award"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Experience Level</h6>
+
+<p>
+Mention realistic experience requirements such as Fresh Graduate, Junior, or Senior Level.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-mortarboard"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>Education Background</h6>
+
+<p>
+Specify diplomas, degrees, certifications, or relevant qualifications when necessary.
+</p>
+
+</div>
+
+</div>
+
+<div class="modern-popup-card">
+
+<div class="popup-icon-box">
+<i class="bi bi-cpu"></i>
+</div>
+
+<div class="popup-content">
+
+<h6>AI Candidate Matching</h6>
+
+<p>
+Structured requirements help the recommendation system identify more suitable candidates automatically.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+        `,
+
+        width: 760,
+
+        background: '#ffffff',
+
+        confirmButtonText: 'Understood',
+
+        confirmButtonColor: '#1f3f79',
+
+        customClass: {
+
+            popup: 'modern-swal-popup',
+
+            title: 'modern-swal-title'
+
+        }
+
+    });
+
+}
+
+</script>
+
+<script>
+const postJobForm = document.getElementById('postJobForm');
+
+postJobForm.addEventListener('submit', event => {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Publish job posting?',
+        text: 'Applicants will be able to view and apply for this job.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Publish',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#1f3f79'
+    }).then(result => {
+        if (result.isConfirmed) {
+            postJobForm.submit();
+        }
+    });
+});
+</script>
+
+{% endblock %}

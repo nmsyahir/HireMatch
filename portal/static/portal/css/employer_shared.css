@@ -1,0 +1,111 @@
+/* Shared employer components. Keep these after page styles to prevent page-specific drift. */
+.company-hero-card,
+.dashboard-overview {
+    background: #ffffff;
+    border: 1px solid #e7edf6;
+    border-radius: 20px;
+    box-shadow: 0 14px 34px rgba(22, 50, 92, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px;
+}
+
+.company-hero-card .company-left,
+.dashboard-overview .company-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.company-hero-card .company-hero-logo,
+.company-hero-card .company-hero-placeholder,
+.dashboard-overview .company-hero-logo,
+.dashboard-overview .company-hero-placeholder {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    flex: 0 0 76px;
+}
+
+.company-hero-card .company-hero-logo,
+.dashboard-overview .company-hero-logo {
+    object-fit: cover;
+    background: #ffffff;
+    border: 1px solid #e7edf6;
+    padding: 6px;
+}
+
+.company-hero-card .company-hero-placeholder,
+.dashboard-overview .company-hero-placeholder {
+    background: #eef3ff;
+    color: #1f3f79;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.company-hero-card .company-info,
+.dashboard-overview .company-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.company-hero-card .company-name,
+.company-hero-card .company-name-hero,
+.dashboard-overview .company-name {
+    background: none;
+    color: #16325c;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.18;
+    margin: 0 0 4px;
+    -webkit-text-fill-color: currentColor;
+}
+
+.company-hero-card .company-industry,
+.dashboard-overview .company-industry {
+    color: #7a8799;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.employer-notification-menu {
+    min-width: 330px;
+    max-width: min(380px, calc(100vw - 24px));
+}
+
+.employer-notification-menu .notification-item {
+    white-space: normal;
+    padding: 12px 18px;
+}
+
+.employer-notification-menu .notification-item strong,
+.employer-notification-menu .notification-item span {
+    display: block;
+}
+
+.employer-notification-menu .notification-item span {
+    color: #6f7d90;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+@media (max-width: 768px) {
+    .company-hero-card,
+    .dashboard-overview {
+        padding: 18px;
+    }
+
+    .company-hero-card .company-name,
+    .company-hero-card .company-name-hero,
+    .dashboard-overview .company-name {
+        font-size: 26px;
+    }
+}

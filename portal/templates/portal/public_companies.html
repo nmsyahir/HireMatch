@@ -1,0 +1,183 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}Explore Companies{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/companies.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="page-header-section public-page-header">
+
+    <div class="container">
+
+        <h1 class="page-title">
+            Explore Companies
+        </h1>
+
+        <p class="page-subtitle">
+            Browse companies.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- SEARCH -->
+<div class="container py-4">
+
+    <div class="search-box shadow-sm mb-4">
+
+        <form
+            method="GET"
+            id="companySearchForm"
+            class="row g-3 align-items-center"
+        >
+
+            <!-- COMPANY SEARCH -->
+            <div class="col-12">
+
+                <input
+                    type="text"
+                    name="q"
+                    id="companySearch"
+                    class="form-control custom-input"
+                    placeholder="Search company name"
+                    value="{{ query }}"
+                    autocomplete="off"
+                >
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- RESULT COUNT -->
+    <div class="mb-4 text-muted">
+
+        {% if companies %}
+
+            Showing
+            <strong>{{ companies|length }}</strong>
+            companies
+
+        {% else %}
+
+            No companies found
+
+        {% endif %}
+
+    </div>
+
+    <!-- COMPANY LIST -->
+    <div class="row">
+
+        {% for company in companies %}
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="card custom-card h-100">
+
+                <div class="card-body d-flex flex-column">
+
+                    <!-- LOGO -->
+                    <div class="text-center mb-3">
+
+                        {% if company.logo %}
+
+                            <img
+                                src="{{ company.logo.url }}"
+                                class="company-logo mb-3"
+                            >
+
+                        {% endif %}
+
+                        <h4 class="job-card-title">
+                            <a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a>
+                        </h4>
+
+                    </div>
+
+                    <!-- INDUSTRY -->
+                    <p class="job-card-company">
+                        {{ company.industry }}
+                    </p>
+
+                    <!-- LOCATION -->
+                    <p class="job-card-meta">
+                        📍 {{ company.location }}
+                    </p>
+
+                    <!-- DESCRIPTION -->
+                    <p class="text-muted flex-grow-1">
+                        {{ company.description|truncatewords:25 }}
+                    </p>
+
+                    <!-- BUTTON -->
+                    <a
+                        href="{% url 'public_company_detail' company.id %}"
+                        class="btn btn-outline-primary mt-auto"
+                    >
+                        View Company
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="text-center py-5">
+
+            <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration" alt="No companies found">
+
+            <h5 class="text-muted">
+                No companies found.
+            </h5>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- AUTO SEARCH -->
+<script>
+
+    let timeout = null;
+
+    const form = document.getElementById(
+        'companySearchForm'
+    );
+
+    const companyInput = document.getElementById(
+        'companySearch'
+    );
+
+    function autoSearch() {
+
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+
+            form.submit();
+
+        }, 400);
+    }
+
+    companyInput.addEventListener(
+        'input',
+        autoSearch
+    );
+
+</script>
+
+{% endblock %}

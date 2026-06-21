@@ -1,0 +1,92 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}FAQ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/faq.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header public-page-header">
+    <div class="container text-white">
+        <h1 class="fw-bold">Frequently Asked Questions</h1>
+        <p class="mb-0">Learn how HireMatch recommendations and applications work.</p>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>How does HireMatch recommend jobs?</span>
+                <i class="bi bi-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                HireMatch extracts text from your latest uploaded resume, converts the resume and available job information into TF-IDF vectors, and uses cosine similarity to rank jobs by textual relevance.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>Can I upload multiple resumes?</span>
+                <i class="bi bi-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                Yes. You can keep multiple PDF resumes in your account, but HireMatch uses your most recently uploaded resume when generating job recommendations.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>When can I withdraw a job application?</span>
+                <i class="bi bi-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                You can withdraw an application while its status is Pending. Accepted or rejected applications remain in your application history.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>What does the recommendation percentage mean?</span>
+                <i class="bi bi-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                The percentage is a textual similarity score between your resume and the job information. It helps compare and rank opportunities, but it does not represent your probability of being hired.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button">
+                <span>How can I improve my recommendation score?</span>
+                <i class="bi bi-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-answer">
+                Keep your resume accurate and clearly describe relevant skills, technologies, qualifications, and work experience. Avoid adding skills that you do not genuinely have.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = document.querySelectorAll('.faq-question');
+
+    questions.forEach(question => {
+        question.addEventListener('click', () => {
+            questions.forEach(otherQuestion => {
+                if (otherQuestion !== question) {
+                    otherQuestion.classList.remove('active');
+                    otherQuestion.nextElementSibling.style.maxHeight = null;
+                }
+            });
+
+            const answer = question.nextElementSibling;
+            const isOpen = question.classList.toggle('active');
+            answer.style.maxHeight = isOpen ? `${answer.scrollHeight}px` : null;
+        });
+    });
+</script>
+
+{% endblock %}

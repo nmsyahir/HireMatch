@@ -1,0 +1,312 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Saved Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/saved_jobs.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Saved Jobs
+        </h1>
+
+        <p class="mb-0">
+            Track and manage your bookmarked opportunities.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container py-4">
+
+<form method="GET" class="filter-card row g-3 align-items-end justify-content-center mb-4">
+
+    <div class="col-md-7">
+        <label class="form-label">Search Saved Jobs</label>
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            value="{{ query }}"
+            placeholder="Job title, company, or location"
+        >
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">Sort By</label>
+        <select name="sort" class="form-select">
+            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest Saved</option>
+            <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest Saved</option>
+            <option value="title" {% if sort == 'title' %}selected{% endif %}>Job Title</option>
+            <option value="company" {% if sort == 'company' %}selected{% endif %}>Company</option>
+        </select>
+    </div>
+
+</form>
+
+{% if saved_jobs %}
+
+<div class="row">
+
+{% for item in saved_jobs %}
+
+<div class="col-lg-6 mb-4">
+
+    <div class="saved-card">
+
+        <!-- TOP -->
+        <div class="saved-top">
+
+            <!-- LEFT -->
+            <div class="d-flex gap-3">
+
+                <!-- COMPANY LOGO -->
+                {% if item.job.company.logo %}
+
+                    <img
+                        src="{{ item.job.company.logo.url }}"
+                        class="saved-logo"
+                        alt="Company Logo"
+                    >
+
+                {% else %}
+
+                    <div class="saved-placeholder">
+
+                        {{ item.job.company.name|slice:":1" }}
+
+                    </div>
+
+                {% endif %}
+
+                <!-- INFO -->
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        {{ item.job.title }}
+                    </h5>
+
+                    <p class="text-muted mb-2">
+                        <a href="{% url 'public_company_detail' item.job.company.id %}" class="company-profile-link">{{ item.job.company.name }}</a>
+                    </p>
+
+                    <!-- SAVED DATE -->
+                    <div class="saved-date">
+
+                        Saved on
+                        {{ item.saved_at|date:"d M Y" }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAGS -->
+        <div class="saved-tags mt-3">
+
+            {% if item.job.job_type %}
+
+            <span class="saved-tag">
+                🕒 {{ item.job.job_type }}
+            </span>
+
+            {% endif %}
+
+            {% if item.job.location %}
+
+            <span class="saved-tag">
+                📍 {{ item.job.location }}
+            </span>
+
+            {% endif %}
+
+            {% if item.job.salary %}
+
+            <span class="saved-tag salary-tag">
+                💰 {{ item.job.salary }}
+            </span>
+
+            {% endif %}
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <p class="saved-description mt-3">
+
+            {{ item.job.description|truncatewords:20 }}
+
+        </p>
+
+        <!-- BUTTONS -->
+        <div class="saved-actions mt-4">
+
+            <!-- VIEW -->
+            <a
+                href="{% url 'job_detail' item.job.id %}"
+                class="btn-view"
+            >
+                View Details
+            </a>
+
+            <!-- APPLY -->
+            {% if item.job.status == 'open' and not item.job.is_filled %}
+            <form method="POST" action="{% url 'apply_job' item.job.id %}" class="saved-apply-form">
+                {% csrf_token %}
+                <button type="submit" class="btn-apply">Apply Now</button>
+            </form>
+            {% elif item.job.is_filled %}
+            <button type="button" class="btn-apply disabled" disabled>Position Filled</button>
+            {% else %}
+            <button type="button" class="btn-apply disabled" disabled>Applications Closed</button>
+            {% endif %}
+
+        </div>
+
+        <!-- REMOVE -->
+        <form
+            method="POST"
+            action="{% url 'remove_saved_job' item.job.id %}"
+            class="remove-saved-form mt-3"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn-remove"
+            >
+                ❤️ Remove
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<!-- EMPTY -->
+<div class="empty-saved-state">
+
+    <img
+        src="{% static 'portal/images/undraw_empty_4zx0.svg' %}"
+        alt="No saved jobs"
+        class="empty-saved-img"
+    >
+
+    <h4>
+        No saved jobs yet
+    </h4>
+
+    <p>
+        Save jobs to compare opportunities and apply later.
+    </p>
+
+    <div class="empty-actions">
+
+        <a
+            href="{% url 'user_jobs' %}"
+            class="btn-empty-primary"
+        >
+            Browse Jobs
+        </a>
+
+        <a
+            href="{% url 'recommendations' %}"
+            class="btn-empty-secondary"
+        >
+            Get Recommendations
+        </a>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    const removeForms = document.querySelectorAll(
+        '.remove-saved-form'
+    );
+
+    removeForms.forEach(form => {
+
+        form.addEventListener(
+            'submit',
+            function(e) {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    title: 'Remove saved job?',
+
+                    text: 'This job will be removed from your saved list.',
+
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonColor: '#dc3545',
+
+                    cancelButtonColor: '#6c757d',
+
+                    confirmButtonText: 'Yes, Remove'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        form.submit();
+
+                    }
+
+                });
+
+            }
+        );
+
+    });
+
+</script>
+
+
+<script>
+    const autoFilterForm = document.querySelector('form[method="GET"]');
+    let autoFilterTimeout = null;
+
+    if (autoFilterForm) {
+        autoFilterForm.querySelectorAll('input, select').forEach(control => {
+            const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
+            control.addEventListener(eventName, () => {
+                clearTimeout(autoFilterTimeout);
+                autoFilterTimeout = setTimeout(() => autoFilterForm.submit(), 350);
+            });
+        });
+    }
+</script>
+{% endblock %}

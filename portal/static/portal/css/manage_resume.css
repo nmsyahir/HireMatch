@@ -1,0 +1,488 @@
+/* =========================
+   HEADER
+========================= */
+.jobs-header {
+
+    background: #1f3f79;
+
+}
+
+/* =========================
+   RESUME CARD
+========================= */
+.resume-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e9ecef;
+
+    border-radius: 18px;
+
+    padding: 32px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 30px;
+
+    flex-wrap: wrap;
+
+    transition: 0.25s ease;
+
+    margin-bottom: 25px;
+
+}
+
+.resume-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+
+}
+
+/* =========================
+   ACTIVE RESUME
+========================= */
+.active-resume {
+
+    border: 2px solid #28a745;
+
+    box-shadow: 0 0 0 4px rgba(40,167,69,0.08);
+
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+.resume-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+    flex: 1;
+
+    min-width: 280px;
+
+}
+
+/* =========================
+   PDF ICON
+========================= */
+.pdf-icon {
+
+    width: 85px;
+
+    height: 85px;
+
+    border-radius: 18px;
+
+    background: #eef3ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 42px;
+
+    flex-shrink: 0;
+
+}
+
+/* =========================
+   INFO
+========================= */
+.resume-info {
+
+    flex: 1;
+
+}
+
+.title-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 10px;
+
+}
+
+.title-wrapper h3 {
+
+    margin-bottom: 0;
+
+    color: #16325c;
+
+    font-weight: 700;
+
+}
+
+/* =========================
+   ACTIVE BADGE
+========================= */
+.badge-active {
+
+    background: #28a745;
+
+    color: #ffffff;
+
+    padding: 5px 12px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+/* =========================
+   FILE NAME
+========================= */
+.resume-file {
+
+    margin-bottom: 8px;
+
+    color: #444;
+
+    font-weight: 500;
+
+    word-break: break-word;
+
+}
+
+/* =========================
+   DATE
+========================= */
+.upload-date {
+
+    margin-bottom: 0;
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+.resume-actions {
+
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+}
+
+/* =========================
+   PRIMARY BUTTON
+========================= */
+.btn-primary-custom {
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+    padding: 11px 22px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.25s ease;
+
+    display: inline-block;
+
+}
+
+.btn-primary-custom:hover {
+
+    background: #16325c;
+
+    color: #ffffff;
+
+}
+
+/* =========================
+   OUTLINE BUTTON
+========================= */
+.btn-outline-custom {
+
+    background: #ffffff;
+
+    color: #1f3f79;
+
+    border: 1px solid #1f3f79;
+
+    padding: 11px 22px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.25s ease;
+
+    display: inline-block;
+
+}
+
+.btn-outline-custom:hover {
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+}
+
+/* =========================
+   TIPS CARD
+========================= */
+.tips-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e9ecef;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+}
+
+/* =========================
+   TIPS HEADER
+========================= */
+.tips-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 22px 28px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+
+}
+
+.tips-header:hover {
+
+    background: #f8f9fa;
+
+}
+
+/* =========================
+   TITLE
+========================= */
+.tips-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.tips-title h4 {
+
+    margin-bottom: 0;
+
+    color: #16325c;
+
+    font-weight: 700;
+
+}
+
+.tips-icon {
+
+    font-size: 24px;
+
+}
+
+/* =========================
+   ARROW
+========================= */
+.tips-arrow {
+
+    font-size: 16px;
+
+    transition: 0.25s ease;
+
+    color: #666;
+
+}
+
+/* =========================
+   DROPDOWN CONTENT
+========================= */
+.tips-content {
+
+    display: none;
+
+    padding: 0 28px 24px 28px;
+
+}
+
+/* =========================
+   TIP ITEM
+========================= */
+.tip-item {
+
+    background: #f8f9fa;
+
+    border-radius: 12px;
+
+    padding: 16px 18px;
+
+    margin-bottom: 12px;
+
+    color: #444;
+
+    line-height: 1.7;
+
+    border: 1px solid #ececec;
+
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+.empty-state {
+
+    background: #ffffff;
+
+    border: 1px solid #ececec;
+
+    border-radius: 18px;
+
+    padding: 70px 30px;
+
+    text-align: center;
+
+}
+
+.empty-icon {
+
+    font-size: 60px;
+
+    margin-bottom: 18px;
+
+}
+
+.empty-state h3 {
+
+    color: #16325c;
+
+    margin-bottom: 14px;
+
+}
+
+.empty-state p {
+
+    color: #666;
+
+    margin-bottom: 26px;
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .resume-card {
+
+        padding: 24px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .resume-left {
+
+        width: 100%;
+
+    }
+
+    .resume-actions {
+
+        width: 100%;
+
+        flex-direction: column;
+
+    }
+
+    .btn-primary-custom,
+    .btn-outline-custom {
+
+        width: 100%;
+
+        text-align: center;
+
+    }
+
+    .tips-header {
+
+        padding: 20px;
+
+    }
+
+    .tips-content {
+
+        padding: 0 20px 20px 20px;
+
+    }
+
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

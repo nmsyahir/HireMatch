@@ -1,0 +1,121 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Resume Generator{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/resume_generator.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- 🔵 HEADER STRIP -->
+<section class="jobs-header public-page-header">
+    <div class="container text-white">
+        <h1 class="fw-bold">Resume Generator</h1>
+        <p>Generate your resume easily in just a few steps.</p>
+    </div>
+</section>
+
+<!-- ⚪ FORM SECTION -->
+<div class="container py-5 form-container">
+
+    <!-- 🔥 WRAPPER (IMPORTANT) -->
+    <div class="resume-wrapper">
+
+        <!-- 🔥 HELP BUTTON (TOP RIGHT OF FORM) -->
+        <button class="btn-help" data-bs-toggle="modal" data-bs-target="#guideModal">
+            ?
+        </button>
+
+        <div class="resume-card">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>First Name</label>
+                        <input type="text" name="first_name" class="form-control"
+                               value="{{ user.first_name }}"
+                               placeholder="e.g. Ahmad" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" class="form-control"
+                               value="{{ user.last_name }}"
+                               placeholder="e.g. Ali" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control"
+                           value="{{ user.email }}"
+                           placeholder="e.g. ahmad@gmail.com" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Phone</label>
+                    <input type="text" name="phone" class="form-control"
+                           value="{{ user.phone }}"
+                           placeholder="e.g. +60123456789">
+                </div>
+
+                <div class="mb-3">
+                    <label>Experience Years</label>
+                    <input type="text" name="experience_years" class="form-control"
+                           placeholder="e.g. 2 years">
+                </div>
+
+                <div class="mb-3">
+                    <label>Skills</label>
+                    <textarea name="skills" class="form-control" rows="3"
+                        placeholder="e.g. Python, Django, Machine Learning, SQL"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Education</label>
+                    <textarea name="education" class="form-control" rows="3"
+                        placeholder="e.g. Bachelor of Computer Science, Universiti Malaya"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Experience</label>
+                    <textarea name="experience" class="form-control" rows="3"
+                        placeholder="e.g. Internship at ABC Tech, Web Developer (2 years)"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-resume w-100">
+                    Generate Resume (PDF)
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 🔥 GUIDE MODAL -->
+<div class="modal fade" id="guideModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">How to Use Resume Generator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <img src="{% static 'portal/images/resume_guide.png' %}" 
+             class="img-fluid rounded shadow">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

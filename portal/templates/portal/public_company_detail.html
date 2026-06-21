@@ -1,0 +1,62 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}{{ company.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/companies.css' %}">
+<link rel="stylesheet" href="{% static 'portal/css/jobs.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header-section public-page-header">
+    <div class="container">
+        <div class="d-flex align-items-center gap-4">
+            {% if company.logo %}
+                <img src="{{ company.logo.url }}" class="company-logo" alt="{{ company.name }} logo">
+            {% endif %}
+            <div>
+                <h1 class="page-title">{{ company.name }}</h1>
+                <p class="page-subtitle mb-1">{{ company.industry }}</p>
+                <p class="company-location mb-0">{{ company.location }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="custom-card p-4 mb-4">
+        <h4 class="fw-bold">Company Profile</h4>
+        <p class="text-muted mb-3">{{ company.description|default:"No company description provided." }}</p>
+        {% if company.website %}
+        <a href="{{ company.website }}" target="_blank" class="btn btn-outline-primary btn-sm">
+            Visit Website
+        </a>
+        {% endif %}
+    </div>
+
+    <h4 class="fw-bold mb-3">Open Jobs</h4>
+    <div class="row">
+        {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+            <div class="job-card">
+                <h5 class="fw-bold">{{ job.title }}</h5>
+                <p class="small text-muted">{{ job.location }} | {{ job.job_type }}</p>
+                <p>{{ job.description|truncatewords:20 }}</p>
+                <a href="{% if request.session.user_id %}{% url 'job_detail' job.id %}{% else %}{% url 'login' %}{% endif %}"
+                   class="btn btn-outline-primary btn-sm">
+                    View Details
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration compact" alt="No open jobs">
+            <span class="text-muted">No open jobs from this company right now.</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

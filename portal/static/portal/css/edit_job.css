@@ -1,0 +1,171 @@
+/* =========================
+   HEADER
+========================= */
+.jobs-header {
+    background: #1f3f79;
+}
+
+/* =========================
+   MAIN
+========================= */
+.edit-job-section {
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+/* =========================
+   FORM CARD
+========================= */
+.edit-job-card {
+    background: #ffffff;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 42px;
+    border-radius: 28px;
+    border: 1px solid #edf1f5;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.05);
+}
+
+/* =========================
+   FORM HEADER
+========================= */
+.edit-form-header {
+    margin-bottom: 34px;
+}
+
+.edit-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #eef3ff;
+    color: #1f3f79;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.edit-form-header h4 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #16325c;
+    margin-bottom: 10px;
+}
+
+.edit-form-header p {
+    color: #7d8ca5;
+    margin-bottom: 0;
+    line-height: 1.7;
+}
+
+/* =========================
+   LABEL
+========================= */
+.form-label {
+    font-weight: 700;
+    color: #16325c;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   INPUT
+========================= */
+.job-input,
+.job-textarea {
+    border-radius: 16px;
+    padding: 15px 18px;
+    border: 1px solid #dbe3ec;
+    background-color: #fbfcfe;
+    font-size: 15px;
+    transition: 0.25s ease;
+}
+
+.job-input:focus,
+.job-textarea:focus {
+    border-color: #1f3f79;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.15rem rgba(31,63,121,0.10);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-submit-job {
+    background: linear-gradient(135deg,#16325c,#1f4e8c);
+    color: #ffffff;
+    border: none;
+    padding: 15px 28px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.btn-submit-job:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+.btn-cancel-job {
+    background: #eef3ff;
+    color: #1f3f79;
+    text-decoration: none;
+    padding: 15px 28px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.btn-cancel-job:hover {
+    background: #1f3f79;
+    color: #ffffff;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .edit-job-card {
+        padding: 28px;
+    }
+
+    .edit-form-header h4 {
+        font-size: 26px;
+    }
+
+    .btn-submit-job,
+    .btn-cancel-job {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

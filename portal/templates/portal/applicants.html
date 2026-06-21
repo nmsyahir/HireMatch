@@ -1,0 +1,316 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Applicants{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/applicants.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">Applicants</h1>
+        <p class="mb-0">Rank applicants by resume match and manage hiring actions.</p>
+    </div>
+</section>
+
+<div class="applicants-section py-5">
+    <div class="container">
+
+        <div class="company-hero-card mb-5">
+            <div class="company-left">
+                {% if company.logo %}
+                    <img src="{{ company.logo.url }}" class="company-hero-logo" alt="{{ company.name }} logo">
+                {% else %}
+                    <div class="company-hero-placeholder">{{ company.name|slice:":1" }}</div>
+                {% endif %}
+                <div class="company-info">
+                    <h2 class="company-name"><a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a></h2>
+                    <p class="company-industry">{{ company.industry }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="GET" class="filter-card row g-3 align-items-end justify-content-center mb-4">
+            <div class="col-md-4">
+                <label class="form-label">Job</label>
+                <select name="job" class="form-select">
+                    <option value="" {% if not job_filter %}selected{% endif %}>All Jobs</option>
+                    {% for job in employer_jobs %}
+                    <option value="{{ job.id }}" {% if job_filter == job.id|stringformat:"s" %}selected{% endif %}>
+                        {{ job.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="" {% if not status_filter %}selected{% endif %}>All Status</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="accepted" {% if status_filter == 'accepted' %}selected{% endif %}>Accepted</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                    <option value="withdrawn" {% if status_filter == 'withdrawn' %}selected{% endif %}>Withdrawn</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Sort</label>
+                <select name="sort" class="form-select">
+                    <option value="match" {% if sort == 'match' %}selected{% endif %}>Best Match</option>
+                    <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+                    <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="applicants-table-card">
+            <div class="table-responsive">
+                <table class="table align-middle applicants-table">
+                    <thead>
+                        <tr>
+                            <th>Applicant</th>
+                            <th>Job Applied</th>
+                            <th>Match</th>
+                            <th>Profile</th>
+                            <th>Status</th>
+                            <th>Applied Date</th>
+                            <th>Resume</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td>
+                                <div class="applicant-info">
+                                    {% if application.user.profile_image %}
+                                    <img src="{{ application.user.profile_image.url }}" class="applicant-avatar-img" alt="{{ application.user.full_name }}">
+                                    {% else %}
+                                    <div class="applicant-avatar">{{ application.user.first_name|slice:":1" }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="applicant-name">{{ application.user.full_name }}</div>
+                                        <div class="applicant-email">{{ application.user.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="job-applied">{{ application.job.title }}</div>
+                            </td>
+                            <td>
+                                <strong>{{ application.match_score|floatformat:0 }}%</strong>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="profile-view-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#applicantProfile{{ application.id }}"
+                                >
+                                    <i class="bi bi-person-lines-fill"></i>
+                                    View Profile
+                                </button>
+                            </td>
+                            <td>
+                                {% if application.status == 'accepted' %}
+                                    <span class="status-badge accepted-status">Accepted</span>
+                                {% elif application.status == 'rejected' %}
+                                    <span class="status-badge rejected-status">Rejected</span>
+                                {% elif application.status == 'withdrawn' %}
+                                    <span class="status-badge withdrawn-status">Withdrawn</span>
+                                {% else %}
+                                    <span class="status-badge pending-status">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td><div class="applied-date">{{ application.applied_at|date:"d M Y" }}</div></td>
+                            <td>
+                                {% if application.latest_resume %}
+                                <a href="{% url 'view_resume' application.latest_resume.id %}" target="_blank" rel="noopener" class="resume-btn">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </a>
+                                {% else %}
+                                <span class="no-resume"><i class="bi bi-file-earmark-x"></i></span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if application.status != 'withdrawn' %}
+                                <div class="table-actions">
+                                    <form method="POST" action="{% url 'update_application_status' application.id 'accepted' %}"
+                                          class="js-confirm-status"
+                                          data-title="Accept applicant?"
+                                          data-text="This applicant will be notified that they got the job.">
+                                        {% csrf_token %}
+                                        <button type="submit" class="icon-action-btn accept-btn" title="Accept Applicant">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{% url 'update_application_status' application.id 'rejected' %}"
+                                          class="js-confirm-status"
+                                          data-title="Reject applicant?"
+                                          data-text="This applicant will be notified that they were not selected.">
+                                        {% csrf_token %}
+                                        <button type="submit" class="icon-action-btn reject-btn" title="Reject Applicant">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                    <a href="{% url 'open_chat' application.job.id application.user.id %}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="icon-action-btn chat-btn js-confirm-chat"
+                                       data-title="Open chat?"
+                                       data-text="You will start a conversation with this applicant."
+                                       title="Chat Applicant">
+                                        <i class="bi bi-chat-dots"></i>
+                                    </a>
+                                </div>
+                                {% else %}
+                                <span class="text-muted small">No actions</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty-state">
+                                    <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration compact" alt="No applicants">
+                                    <h4>No Applicants Yet</h4>
+                                    <p>Applicants will appear once users apply for your jobs.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% for application in applications %}
+            <div class="modal fade" id="applicantProfile{{ application.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content applicant-profile-modal">
+                        <div class="modal-header">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if application.user.profile_image %}
+                                <img src="{{ application.user.profile_image.url }}" class="applicant-modal-avatar" alt="{{ application.user.full_name }}">
+                                {% else %}
+                                <div class="applicant-modal-avatar-placeholder">{{ application.user.first_name|slice:":1" }}</div>
+                                {% endif %}
+                                <div>
+                                    <h5 class="modal-title">{{ application.user.full_name }}</h5>
+                                    <p class="mb-0 text-muted">{{ application.user.email }}</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="profile-detail-grid">
+                                <div>
+                                    <span>Applied For</span>
+                                    <strong>{{ application.job.title }}</strong>
+                                </div>
+                                <div>
+                                    <span>Match Score</span>
+                                    <strong>{{ application.match_score|floatformat:0 }}%</strong>
+                                </div>
+                                <div>
+                                    <span>Phone</span>
+                                    <strong>{{ application.user.phone|default:"Not provided" }}</strong>
+                                </div>
+                                <div>
+                                    <span>Location</span>
+                                    <strong>{{ application.user.location|default:"Not provided" }}</strong>
+                                </div>
+                                <div>
+                                    <span>Education</span>
+                                    <strong>{% if application.latest_resume and application.latest_resume.education %}{{ application.latest_resume.education }}{% else %}Not provided{% endif %}</strong>
+                                </div>
+                                <div>
+                                    <span>LinkedIn</span>
+                                    <strong>
+                                        {% if application.user.linkedin %}
+                                            <a href="{{ application.user.linkedin }}" target="_blank" rel="noopener">View LinkedIn</a>
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span>GitHub</span>
+                                    <strong>
+                                        {% if application.user.github %}
+                                            <a href="{{ application.user.github }}" target="_blank" rel="noopener">View GitHub</a>
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.js-confirm-status').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: form.dataset.title,
+                text: form.dataset.text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#1f3f79'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    document.querySelectorAll('.js-confirm-chat').forEach(link => {
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            Swal.fire({
+                title: link.dataset.title,
+                text: link.dataset.text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Open Chat',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#1f3f79'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    window.open(link.href, '_blank', 'noopener');
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    const autoFilterForm = document.querySelector('form[method="GET"]');
+    let autoFilterTimeout = null;
+
+    if (autoFilterForm) {
+        autoFilterForm.querySelectorAll('input, select').forEach(control => {
+            const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
+            control.addEventListener(eventName, () => {
+                clearTimeout(autoFilterTimeout);
+                autoFilterTimeout = setTimeout(() => autoFilterForm.submit(), 350);
+            });
+        });
+    }
+</script>
+{% endblock %}

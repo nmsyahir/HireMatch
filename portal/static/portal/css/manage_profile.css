@@ -1,0 +1,308 @@
+/* =========================
+   PAGE
+========================= */
+body {
+
+    background: #f5f7fb;
+
+}
+
+/* =========================
+   PROFILE SIDEBAR
+========================= */
+.profile-sidebar {
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 40px 30px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    border: 1px solid #edf1f5;
+
+    position: sticky;
+
+    top: 100px;
+
+}
+
+/* =========================
+   PROFILE IMAGE
+========================= */
+.profile-image-wrapper {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.profile-image {
+
+    width: 170px;
+
+    height: 170px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 6px solid #f4b400;
+
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+
+}
+
+/* =========================
+   PLACEHOLDER
+========================= */
+.profile-placeholder {
+
+    width: 170px;
+
+    height: 170px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #16325c,
+        #1f4e8c
+    );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: #ffffff;
+
+    font-size: 52px;
+
+    font-weight: 700;
+
+    border: 6px solid #f4b400;
+
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+
+}
+
+/* =========================
+   EMAIL
+========================= */
+.profile-email {
+
+    color: #6b7a90;
+
+    font-size: 0.95rem;
+
+    margin-bottom: 14px;
+
+}
+
+/* =========================
+   ROLE
+========================= */
+.profile-role {
+
+    background: #eef4ff;
+
+    color: #16325c;
+
+    padding: 8px 16px;
+
+    border-radius: 50px;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    display: inline-block;
+
+}
+
+/* =========================
+   MEMBER BOX
+========================= */
+.member-box {
+
+    background: #f8fbff;
+
+    border: 1px solid #dbe7f5;
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    color: #5f6f89;
+
+    font-weight: 600;
+
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+.profile-card {
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 40px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    border: 1px solid #edf1f5;
+
+}
+
+/* =========================
+   FORM LABEL
+========================= */
+.form-label {
+
+    font-weight: 700;
+
+    color: #16325c;
+
+    margin-bottom: 10px;
+
+}
+
+/* =========================
+   INPUT
+========================= */
+.form-control {
+
+    border-radius: 14px;
+
+    padding: 14px 16px;
+
+    border: 1px solid #d9e2ee;
+
+    box-shadow: none !important;
+
+    transition: 0.25s ease;
+
+}
+
+/* FOCUS */
+.form-control:focus {
+
+    border-color: #1f4e8c;
+
+    box-shadow: 0 0 0 4px rgba(31,78,140,0.08) !important;
+
+}
+
+/* =========================
+   TEXTAREA
+========================= */
+textarea.form-control {
+
+    resize: none;
+
+}
+
+/* =========================
+   SAVE BUTTON
+========================= */
+.btn-save-profile {
+
+    background: linear-gradient(
+        135deg,
+        #16325c,
+        #1f4e8c
+    );
+
+    color: #ffffff;
+
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 14px 28px;
+
+    font-weight: 700;
+
+    transition: 0.25s ease;
+
+    box-shadow: 0 8px 20px rgba(22,50,92,0.18);
+
+}
+
+/* HOVER */
+.btn-save-profile:hover {
+
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+        135deg,
+        #10284a,
+        #163b73
+    );
+
+}
+
+/* =========================
+   ALERT
+========================= */
+.alert {
+
+    border-radius: 14px;
+
+    border: none;
+
+    padding: 14px 18px;
+
+    font-weight: 600;
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 991px) {
+
+    .profile-sidebar {
+
+        position: relative;
+
+        top: 0;
+
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .profile-card {
+
+        padding: 28px 22px;
+
+    }
+
+    .profile-sidebar {
+
+        padding: 30px 22px;
+
+    }
+
+    .profile-image,
+    .profile-placeholder {
+
+        width: 140px;
+
+        height: 140px;
+
+    }
+
+}

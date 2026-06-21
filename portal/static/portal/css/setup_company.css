@@ -1,0 +1,155 @@
+/* =========================
+   PAGE BACKGROUND
+========================= */
+.setup-company-section {
+    background: linear-gradient(
+        to bottom,
+        #f8f9fb 0%,
+        #eef3f9 100%
+    );
+
+    min-height: 100vh;
+}
+
+/* =========================
+   CARD
+========================= */
+.setup-company-card {
+    background: #ffffff;
+
+    border-radius: 22px;
+
+    border: 1px solid #edf1f5;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    overflow: hidden;
+}
+
+/* =========================
+   CARD BODY
+========================= */
+.setup-company-body {
+    padding: 45px;
+}
+
+/* =========================
+   TITLE
+========================= */
+.setup-title {
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    color: #16325c;
+
+    margin-bottom: 10px;
+}
+
+/* =========================
+   SUBTITLE
+========================= */
+.setup-subtitle {
+    color: #6f7d90;
+
+    margin-bottom: 35px;
+
+    line-height: 1.7;
+}
+
+/* =========================
+   LABELS
+========================= */
+.setup-company-body .form-label {
+    font-weight: 600;
+
+    color: #16325c;
+
+    margin-bottom: 8px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.setup-company-body .form-control {
+    border-radius: 12px;
+
+    padding: 13px 15px;
+
+    border: 1px solid #dfe7f1;
+
+    transition: 0.2s;
+}
+
+/* INPUT FOCUS */
+.setup-company-body .form-control:focus {
+    border-color: #1f3f79;
+
+    box-shadow: 0 0 0 0.15rem rgba(31,63,121,0.12);
+}
+
+/* =========================
+   TEXTAREA
+========================= */
+.setup-company-body textarea.form-control {
+    resize: none;
+}
+
+/* =========================
+   FILE INPUT
+========================= */
+.setup-company-body input[type="file"] {
+    padding: 10px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.btn-company-create {
+    background: #1f3f79;
+
+    color: #fff;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 14px;
+
+    font-weight: 700;
+
+    transition: 0.25s;
+}
+
+/* BUTTON HOVER */
+.btn-company-create:hover {
+    background: #16325c;
+
+    transform: translateY(-2px);
+
+    color: #fff;
+}
+
+/* =========================
+   ALERT
+========================= */
+.setup-company-card .alert {
+    border-radius: 12px;
+
+    font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .setup-company-body {
+        padding: 28px;
+    }
+
+    .setup-title {
+        font-size: 1.6rem;
+    }
+
+}

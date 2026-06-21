@@ -1,0 +1,102 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="about-hero public-page-header">
+
+    <div class="container text-white">
+
+        <div class="hero-content">
+
+            <h1 class="fw-bold">
+                Know More About Us
+            </h1>
+
+            <p class="mt-3">
+                Learn how HireMatch helps users discover suitable career opportunities faster through intelligent job matching technology.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="about-section">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <!-- TEXT -->
+            <div class="col-lg-6">
+
+                <div class="about-content">
+
+                    <h2 class="about-title">
+                        What's So Special?
+                    </h2>
+
+                    <p>
+                        HireMatch is a modern job recommendation platform designed to simplify the job search experience for users. Instead of manually browsing through hundreds of job listings, our system helps users discover opportunities that are more relevant to their profile.
+                    </p>
+
+                    <p>
+                        By allowing users to upload their resume, the platform intelligently analyzes their background, skills, and experience to suggest suitable job positions. This approach helps reduce time spent searching and increases the chances of finding the right job faster.
+                    </p>
+
+                    <p>
+                        Our goal is to create a smarter and more efficient job matching experience. We focus on providing a user-friendly system that supports both job seekers and employers by improving how opportunities are discovered and matched.
+                    </p>
+
+                    <p>
+                        With a clean interface and intelligent matching system, HireMatch ensures that users can confidently explore career opportunities that align with their strengths and interests.
+                    </p>
+
+                    <!-- BUTTON -->
+                    <div class="mt-4">
+
+                        <a
+                            href="{% url 'public_jobs' %}"
+                            class="btn btn-about"
+                        >
+                            Explore Jobs
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- IMAGE -->
+            <div class="col-lg-6 text-center">
+
+                <div class="about-image-wrapper">
+
+                    <img
+                        src="{% static 'portal/images/aboutus.jpg' %}"
+                        class="about-img img-fluid"
+                        alt="About Us"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

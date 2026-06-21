@@ -1,0 +1,123 @@
+/* Remove gap from navbar */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Header strip */
+.jobs-header {
+    background: linear-gradient(135deg, #16325c, #1f4e8c);
+}
+
+/* Container width */
+.form-container {
+    max-width: 1100px;
+}
+
+/* Wrapper for positioning help button */
+.resume-wrapper {
+    position: relative;
+}
+
+/* Form card */
+.resume-card {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* Label */
+.resume-card label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Input */
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #dbe3ec;
+}
+
+/* Input focus */
+.form-control:focus {
+    border-color: #1f3f79;
+    box-shadow: 0 0 0 2px rgba(31, 63, 121, 0.1);
+}
+
+/* Button */
+.btn-resume {
+    background-color: #f4b400;
+    color: #16325c;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 12px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-resume:hover {
+    background-color: #dca300;
+    color: #ffffff;
+}
+
+/* Spacing */
+.mb-3 {
+    margin-bottom: 18px !important;
+}
+
+/* Help button (top-right of form) */
+.btn-help {
+    position: absolute;
+    top: -15px;
+    right: -70px;
+
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+
+    background-color: #f4b400;
+    color: #16325c;
+
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+
+    transition: 0.25s ease;
+    z-index: 10;
+}
+
+.btn-help:hover {
+    background-color: #ffd54f;
+    transform: scale(1.1);
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

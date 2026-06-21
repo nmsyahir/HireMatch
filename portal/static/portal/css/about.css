@@ -1,0 +1,109 @@
+/* ===== TOP BLUE HEADER ===== */
+.about-hero {
+    background: #1f3f79;
+    padding: 50px 0;
+    color: #ffffff;
+}
+
+/* TITLE */
+.about-hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* SUBTEXT */
+.about-hero p {
+    font-size: 1.05rem;
+    color: #d6e0f0;
+    max-width: 650px;
+    line-height: 1.8;
+}
+
+/* ===== MAIN SECTION ===== */
+.about-section {
+    background-color: #ffffff;
+    padding: 60px 0;
+    color: #16325c;
+}
+
+/* SECTION TITLE */
+.about-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #16325c;
+}
+
+/* PARAGRAPH STYLE */
+.about-section p {
+    line-height: 1.9;
+    font-size: 1rem;
+    color: #5f6f89;
+    margin-bottom: 18px;
+}
+
+/* ===== IMAGE ===== */
+.about-img {
+    max-width: 85%;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+    transition: 0.3s ease;
+}
+
+/* IMAGE HOVER */
+.about-img:hover {
+    transform: translateY(-3px);
+}
+
+/* ===== BUTTON ===== */
+.btn-about {
+    background-color: #f4b400;
+    color: #16325c;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 12px 30px;
+    border: none;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+/* HOVER EFFECT */
+.btn-about:hover {
+    background-color: #dca300;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .about-hero {
+        padding: 45px 0;
+        text-align: center;
+    }
+
+    .about-hero h1 {
+        font-size: 2rem;
+    }
+
+    .about-hero p {
+        font-size: 0.95rem;
+        margin: auto;
+    }
+
+    .about-section {
+        padding: 45px 0;
+    }
+
+    .about-section h2 {
+        font-size: 1.7rem;
+        margin-top: 30px;
+    }
+
+    .about-img {
+        max-width: 100%;
+        margin-top: 25px;
+    }
+
+}

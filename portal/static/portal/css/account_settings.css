@@ -1,0 +1,307 @@
+/* =========================
+   SETTINGS CARD
+========================= */
+.settings-card {
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    padding: 32px;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+    border: 1px solid #edf1f5;
+
+}
+
+/* =========================
+   ACCOUNT INFO
+========================= */
+.account-info {
+
+    margin-bottom: 10px;
+
+}
+
+.info-box label {
+
+    display: block;
+
+    font-weight: 700;
+
+    color: #16325c;
+
+    margin-bottom: 10px;
+
+    font-size: 15px;
+
+}
+
+/* =========================
+   INPUTS
+========================= */
+.form-control {
+
+    border-radius: 14px;
+
+    padding: 14px 16px;
+
+    border: 1px solid #dbe3ec;
+
+    font-size: 15px;
+
+    transition: 0.2s ease;
+
+    box-shadow: none;
+
+}
+
+.form-control:focus {
+
+    border-color: #16325c;
+
+    box-shadow: 0 0 0 0.15rem rgba(22,50,92,0.15);
+
+}
+
+/* =========================
+   VERIFIED CARD
+========================= */
+.verified-card {
+
+    background: linear-gradient(
+        135deg,
+        #ecfdf3,
+        #dff7ea
+    );
+
+    border: 1px solid #c7eed7;
+
+    border-radius: 18px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.verified-icon {
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 16px;
+
+    background: #22c55e;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+    font-size: 24px;
+
+    flex-shrink: 0;
+
+}
+
+.verified-card h6 {
+
+    color: #157347;
+
+    font-weight: 700;
+
+    font-size: 17px;
+
+}
+
+.verified-card p {
+
+    color: #4f7d62;
+
+    font-size: 14px;
+
+}
+
+/* =========================
+   UNVERIFIED CARD
+========================= */
+.unverified-card {
+
+    background: linear-gradient(
+        135deg,
+        #fff1f2,
+        #ffe5e7
+    );
+
+    border: 1px solid #ffd0d5;
+
+    border-radius: 18px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.unverified-icon {
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 16px;
+
+    background: #dc3545;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+    font-size: 24px;
+
+    flex-shrink: 0;
+
+}
+
+.unverified-card h6 {
+
+    color: #b42334;
+
+    font-weight: 700;
+
+    font-size: 17px;
+
+}
+
+.unverified-card p {
+
+    color: #91545d;
+
+    font-size: 14px;
+
+}
+
+/* =========================
+   DIVIDER
+========================= */
+.settings-divider {
+
+    margin: 22px 0;
+
+    border-top: 1px solid #edf1f5;
+
+}
+
+/* =========================
+   SAVE BUTTON
+========================= */
+.btn-save-settings {
+
+    background: linear-gradient(
+        135deg,
+        #16325c,
+        #1f4e8c
+    );
+
+    color: #ffffff;
+
+    border: none;
+
+    padding: 14px 28px;
+
+    border-radius: 14px;
+
+    font-weight: 700;
+
+    font-size: 15px;
+
+    transition: 0.25s ease;
+
+    width: 100%;
+
+}
+
+.btn-save-settings:hover {
+
+    transform: translateY(-2px);
+
+    opacity: 0.95;
+
+}
+
+/* =========================
+   PASSWORD WRAPPER
+========================= */
+.password-wrapper {
+
+    position: relative;
+
+}
+
+/* PASSWORD INPUT */
+.password-input {
+
+    padding-right: 52px;
+
+}
+
+/* TOGGLE ICON */
+.toggle-password {
+
+    position: absolute;
+
+    top: 50%;
+
+    right: 18px;
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+    color: #6c757d;
+
+    font-size: 18px;
+
+    transition: 0.2s;
+
+    z-index: 5;
+
+}
+
+/* HOVER */
+.toggle-password:hover {
+
+    color: #16325c;
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .settings-card {
+
+        padding: 25px;
+
+    }
+
+}

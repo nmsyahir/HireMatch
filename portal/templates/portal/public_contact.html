@@ -1,0 +1,206 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/contact.css' %}">
+
+<!-- BOOTSTRAP ICONS -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+>
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="contact-header public-page-header text-white">
+
+    <div class="container">
+
+        <h1 class="fw-bold">
+            Contact Us
+        </h1>
+
+        <p>
+            We’d love to hear from you. Get in touch with HireMatch.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container py-5">
+
+    <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-lg-5">
+
+            <div class="contact-card h-100">
+
+                <h4 class="fw-bold mb-4">
+                    Contact Information
+                </h4>
+
+                <!-- EMAIL -->
+                <div class="contact-info-item">
+
+                    <i class="bi bi-envelope-fill"></i>
+
+                    <div>
+
+                        <h6>Email</h6>
+
+                        <p>
+                            support@hirematch.com
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- PHONE -->
+                <div class="contact-info-item">
+
+                    <i class="bi bi-telephone-fill"></i>
+
+                    <div>
+
+                        <h6>Phone</h6>
+
+                        <p>
+                            +60 12-345 6789
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- ADDRESS -->
+                <div class="contact-info-item">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    <div>
+
+                        <h6>Address</h6>
+
+                        <p>
+                            Shah Alam, Selangor, Malaysia
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <p class="contact-description">
+
+                    Our team is ready to assist you with any questions or support you need.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-7">
+
+            <div class="contact-card">
+
+                <h4 class="fw-bold mb-4">
+                    Send Us a Message
+                </h4>
+
+                <form id="contactForm">
+
+                    <!-- NAME -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Enter your name"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- MESSAGE -->
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Message
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            rows="5"
+                            placeholder="Write your message"
+                            required
+                        ></textarea>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button
+                        type="button"
+                        class="btn btn-contact w-100"
+                        onclick="sendMessage()"
+                    >
+                        Send Message
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function sendMessage() {
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Message Sent',
+            text: 'Thank you for contacting HireMatch. Our support team will review your message.',
+            confirmButtonColor: '#16325c'
+        }).then(() => {
+            document.getElementById('contactForm').reset();
+        });
+    }
+
+</script>
+
+{% endblock %}

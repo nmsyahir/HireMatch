@@ -1,0 +1,399 @@
+{% extends 'portal/chat_base.html' %}
+{% load static %}
+
+{% block title %}Chat{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/chat_room.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Chat with Applicant
+        </h1>
+
+        <p class="mb-0">
+            Regarding: {{ job.title }}
+        </p>
+
+    </div>
+
+</section>
+
+<!-- CHAT -->
+<div class="chat-section py-5">
+
+    <div class="container">
+
+        <!-- BACK -->
+        <div class="mb-3">
+
+            <button onclick="window.location.href='{% url 'chat_list' %}'" class="btn-back">
+                <i class="bi bi-arrow-left"></i> Back to Messages
+            </button>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="chat-card">
+
+            <!-- TOP -->
+            <div class="chat-top">
+
+                <div class="chat-user-info">
+
+                    {% if other_user.profile_image %}
+                    <img src="{{ other_user.profile_image.url }}" class="chat-company-logo" alt="{{ other_user.full_name }}">
+                    {% else %}
+                    <div class="chat-avatar">{{ other_user.first_name|slice:":1" }}</div>
+                    {% endif %}
+
+                    <div>
+
+                        <h5>
+                            {{ other_user.full_name }}
+                        </h5>
+
+                        <p>
+                            Job Seeker
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="chat-status">
+
+                    <span class="status-dot"></span>
+
+                    Active
+
+                </div>
+
+            </div>
+
+            <!-- MESSAGES -->
+            <div
+                id="chatMessages"
+                class="chat-messages"
+            >
+
+                {% for msg in messages %}
+
+                    {% if msg.sender.id == request.session.user_id %}
+
+                        <div class="message-row my-message">
+
+                            <div class="message-bubble">
+
+                                <p>
+                                    {{ msg.message }}
+                                </p>
+
+                                <span>
+                                    {{ msg.timestamp|date:"h:i A" }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="message-row other-message">
+
+                            <div class="message-bubble">
+
+                                <p>
+                                    {{ msg.message }}
+                                </p>
+
+                                <span>
+                                    {{ msg.timestamp|date:"h:i A" }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                {% empty %}
+
+                    <div class="empty-chat">
+
+                        <h5>
+                            No messages yet
+                        </h5>
+
+                        <p>
+                            Start the conversation now.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- FORM -->
+            <form
+                id="chatForm"
+                class="chat-form"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    id="receiverId"
+                    value="{{ other_user.id }}"
+                >
+
+                <input
+                    type="hidden"
+                    id="jobId"
+                    value="{{ job.id }}"
+                >
+
+                <input
+                    type="text"
+                    id="messageInput"
+                    class="form-control"
+                    placeholder="Type your message..."
+                    autocomplete="off"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn-send"
+                >
+
+                    Send
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const chatMessages =
+    document.getElementById("chatMessages");
+
+const chatForm =
+    document.getElementById("chatForm");
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const receiverId =
+    document.getElementById("receiverId").value;
+
+const jobId =
+    document.getElementById("jobId").value;
+
+/* =========================
+   AUTO SCROLL
+========================= */
+function scrollToBottom() {
+
+    chatMessages.scrollTop =
+        chatMessages.scrollHeight;
+
+}
+
+/* =========================
+   PREVENT BLINKING
+========================= */
+let lastMessageCount = 0;
+
+function escapeHtml(value) {
+    const element = document.createElement('div');
+    element.textContent = value == null ? '' : String(value);
+    return element.innerHTML;
+}
+
+/* =========================
+   LOAD MESSAGES
+========================= */
+function loadMessages() {
+
+    fetch(`/fetch-messages/${jobId}/${receiverId}/`)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            /* STOP RE-RENDER IF SAME */
+            if (
+                data.messages.length ===
+                lastMessageCount
+            ) {
+
+                return;
+
+            }
+
+            lastMessageCount =
+                data.messages.length;
+
+            let html = "";
+
+            /* EMPTY CHAT */
+            if (data.messages.length === 0) {
+
+                html = `
+                    <div class="empty-chat">
+
+                        <h5>
+                            No messages yet
+                        </h5>
+
+                        <p>
+                            Start the conversation now.
+                        </p>
+
+                    </div>
+                `;
+
+            }
+
+            /* RENDER MESSAGES */
+            else {
+
+                data.messages.forEach(msg => {
+
+                    const rowClass =
+                        msg.is_me
+                        ? "my-message"
+                        : "other-message";
+
+                    html += `
+                        <div class="message-row ${rowClass}">
+
+                            <div class="message-bubble">
+
+                                <p>
+                                    ${escapeHtml(msg.message)}
+                                </p>
+
+                                <span>
+                                    ${escapeHtml(msg.time)}
+                                </span>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                });
+
+            }
+
+            /* UPDATE HTML */
+            chatMessages.innerHTML = html;
+
+            /* AUTO SCROLL */
+            scrollToBottom();
+
+        });
+
+}
+
+/* =========================
+   SEND MESSAGE
+========================= */
+chatForm.addEventListener(
+    "submit",
+    function(e) {
+
+        e.preventDefault();
+
+        const message =
+            messageInput.value.trim();
+
+        if (message === "") {
+
+            return;
+
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "receiver_id",
+            receiverId
+        );
+
+        formData.append(
+            "job_id",
+            jobId
+        );
+
+        formData.append(
+            "message",
+            message
+        );
+
+        formData.append(
+            "csrfmiddlewaretoken",
+            chatForm.querySelector('[name="csrfmiddlewaretoken"]').value
+        );
+
+        fetch("{% url 'send_message' %}", {
+
+            method: "POST",
+
+            body: formData
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (data.status === "success") {
+
+                messageInput.value = "";
+
+                /* FORCE REFRESH */
+                lastMessageCount = 0;
+
+                loadMessages();
+
+            }
+
+        });
+
+    }
+);
+
+/* =========================
+   INITIAL LOAD
+========================= */
+loadMessages();
+
+/* =========================
+   AUTO REFRESH
+========================= */
+setInterval(
+    loadMessages,
+    1000
+);
+
+</script>
+
+{% endblock %}

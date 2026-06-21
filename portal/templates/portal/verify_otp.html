@@ -1,0 +1,34 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/otp.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="otp-section d-flex align-items-center justify-content-center">
+    <div class="otp-card shadow">
+        <h3 class="text-center fw-bold mb-2">{% if otp_purpose == 'reset_password' %}Verify Password Reset{% else %}Verify Your Account{% endif %}</h3>
+        <p class="text-center text-muted mb-4">Enter the 6-digit OTP sent to your email. The code expires in 5 minutes.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" name="otp" class="form-control otp-input text-center" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" placeholder="------" required>
+            </div>
+            <button type="submit" class="btn btn-otp w-100">Verify OTP</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">Didn't receive the code?</small>
+            <form method="POST" action="{% url 'resend_otp' %}" class="mt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link resend-link p-0">Resend OTP</button>
+            </form>
+            <a href="{% url 'login' %}" class="resend-link d-inline-block mt-2">Back to Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

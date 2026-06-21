@@ -1,0 +1,190 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Manage Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/manage_job.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">Manage Jobs</h1>
+        <p class="mb-0">Monitor vacancies, applicant volume, and posting status.</p>
+    </div>
+</section>
+
+<div class="manage-job-section py-5">
+    <div class="container">
+
+        <div class="company-hero-card mb-5">
+            <div class="company-left">
+                {% if company.logo %}
+                    <img src="{{ company.logo.url }}" class="company-hero-logo" alt="{{ company.name }} logo">
+                {% else %}
+                    <div class="company-hero-placeholder">{{ company.name|slice:":1" }}</div>
+                {% endif %}
+                <div class="company-info">
+                    <h2 class="company-name-hero"><a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a></h2>
+                    <p class="company-industry">{{ company.industry }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-card mb-5">
+            <form method="GET">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-4">
+                        <label class="form-label">Job Title</label>
+                        <input type="text" name="q" class="form-control filter-input" placeholder="Search job title..." value="{{ query }}">
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" class="form-control filter-input" placeholder="Search location..." value="{{ location }}">
+                    </div>
+                    <div class="col-lg-4">
+                        <label class="form-label">Status</label>
+                        <div class="select-filter-wrap">
+                            <select name="status" class="form-select filter-input">
+                                <option value="" {% if not status %}selected{% endif %}>All Status</option>
+                                <option value="open" {% if status == 'open' %}selected{% endif %}>Open</option>
+                                <option value="closed" {% if status == 'closed' %}selected{% endif %}>Closed</option>
+                                <option value="filled" {% if status == 'filled' %}selected{% endif %}>Filled</option>
+                            </select>
+                            <i class="bi bi-chevron-down select-filter-arrow" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {% if jobs %}
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-lg-6">
+                <div class="job-card">
+                    <div class="job-top">
+                        <div class="job-identity">
+                            {% if company.logo %}
+                            <img src="{{ company.logo.url }}" class="job-company-logo" alt="{{ company.name }} logo">
+                            {% else %}
+                            <div class="job-company-placeholder">{{ company.name|slice:":1" }}</div>
+                            {% endif %}
+                            <div>
+                                <h3 class="job-title">{{ job.title }}</h3>
+                                <a href="{% url 'public_company_detail' company.id %}" class="job-company">{{ company.name }}</a>
+                            </div>
+                        </div>
+                        <span class="status-text status-{{ job.display_status }}">
+                            {{ job.display_status|title }}
+                        </span>
+                    </div>
+
+                    <div class="job-tags">
+                        {% if job.job_type %}<span>{{ job.job_type }}</span>{% endif %}
+                        {% if job.location %}<span><i class="bi bi-geo-alt-fill location-icon"></i> {{ job.location }}</span>{% endif %}
+                        {% if job.salary %}<span><i class="bi bi-cash-stack salary-icon"></i> {{ job.salary }}</span>{% endif %}
+                    </div>
+
+                    <p class="job-description">{{ job.description|truncatewords:28 }}</p>
+
+                    <div class="job-stats">
+                        <div class="job-stat">
+                            <i class="bi bi-people"></i>
+                            <span>{{ job.applicant_total }} Applicants</span>
+                        </div>
+                        <div class="job-stat">
+                            <i class="bi bi-check-circle"></i>
+                            <span>{{ job.accepted_count }} / {{ job.vacancies }} Hired</span>
+                        </div>
+                        <div class="job-stat">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>{{ job.created_at|date:"d M Y" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="job-actions">
+                        <a href="{% url 'employer_job_detail' job.id %}" class="action-btn">
+                            <i class="bi bi-eye-fill"></i> View
+                        </a>
+                        <a href="{% url 'edit_job' job.id %}" class="action-btn edit-btn">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <a href="{% url 'view_applicants' %}?job={{ job.id }}" class="action-btn applicant-btn">
+                            <i class="bi bi-person-lines-fill"></i> Applicants
+                        </a>
+                        <form method="POST" action="{% url 'toggle_job_status' job.id %}"
+                              data-title="{% if job.status == 'open' %}Close job posting?{% else %}Open job posting?{% endif %}"
+                              data-text="{% if job.status == 'open' %}Applicants will no longer see or apply for this job.{% else %}Applicants will be able to see and apply for this job again.{% endif %}"
+                              class="action-form js-confirm-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn {% if job.status == 'open' %}close-status-btn{% else %}open-status-btn{% endif %}" {% if job.is_filled %}disabled title="Increase vacancies before reopening this filled job"{% endif %}>
+                                <i class="bi bi-power"></i>
+                                {% if job.is_filled %}Filled{% elif job.status == 'open' %}Close{% else %}Open{% endif %}
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'delete_job' job.id %}"
+                              data-title="Delete job?"
+                              data-text="This job posting will be permanently deleted."
+                              class="action-form js-confirm-form delete-form">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn delete-btn">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration" alt="No jobs found">
+            <h3>No Jobs Found</h3>
+            <p>Adjust the filters or use Post Job from the sidebar to create a new vacancy.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelectorAll('.js-confirm-form').forEach(form => {
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            Swal.fire({
+                title: form.dataset.title,
+                text: form.dataset.text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Continue',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: form.classList.contains('delete-form') || form.querySelector('.close-status-btn') ? '#dc2626' : '#16a34a'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    const autoFilterForm = document.querySelector('form[method="GET"]');
+    let autoFilterTimeout = null;
+
+    if (autoFilterForm) {
+        autoFilterForm.querySelectorAll('input, select').forEach(control => {
+            const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
+            control.addEventListener(eventName, () => {
+                clearTimeout(autoFilterTimeout);
+                autoFilterTimeout = setTimeout(() => autoFilterForm.submit(), 350);
+            });
+        });
+    }
+</script>
+{% endblock %}

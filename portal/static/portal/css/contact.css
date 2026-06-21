@@ -1,0 +1,127 @@
+/* ===== HEADER ===== */
+.contact-header {
+    background:  #1f3f79;
+    padding: 60px 0;
+}
+
+.contact-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.contact-header p {
+    font-size: 1rem;
+    color: #d6e0f0;
+    margin-bottom: 0;
+    max-width: 600px;
+    line-height: 1.8;
+}
+
+/* ===== CONTACT CARD ===== */
+.contact-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #eeeeee;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ===== CONTACT INFO ===== */
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.contact-info-item i {
+    font-size: 20px;
+    color: #1f3f79;
+    margin-top: 2px;
+}
+
+.contact-info-item h6 {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #16325c;
+}
+
+.contact-info-item p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 15px;
+}
+
+/* ===== DESCRIPTION ===== */
+.contact-description {
+    color: #6c757d;
+    line-height: 1.8;
+    margin-bottom: 0;
+}
+
+/* ===== FORM LABEL ===== */
+.form-label {
+    font-weight: 600;
+    color: #16325c;
+    margin-bottom: 8px;
+}
+
+/* ===== INPUT ===== */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    padding: 12px 14px;
+    transition: all 0.3s ease;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #1f3f79;
+    box-shadow: 0 0 0 0.15rem rgba(31, 63, 121, 0.15);
+}
+
+/* ===== TEXTAREA ===== */
+textarea.form-control {
+    resize: none;
+}
+
+/* ===== BUTTON ===== */
+.btn-contact {
+    background-color: #f4b400;
+    color: #16325c;
+    font-weight: 700;
+    border-radius: 10px;
+    border: none;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-contact:hover {
+    background-color: #dca300;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .contact-header {
+        padding: 45px 0;
+        text-align: center;
+    }
+
+    .contact-header h1 {
+        font-size: 2rem;
+    }
+
+    .contact-card {
+        padding: 24px;
+    }
+
+}

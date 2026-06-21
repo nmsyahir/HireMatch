@@ -1,0 +1,257 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/employer_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Welcome, {{ user.first_name }}
+        </h1>
+
+        <p class="mb-0">
+            Manage your career journey and explore opportunities.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- DASHBOARD -->
+<div class="dashboard-section py-5">
+
+    <div class="container">
+
+        <!-- STATS -->
+        <div class="row g-4 mb-5">
+
+            <!-- RESUMES -->
+            <div class="col-md-4">
+
+                <div class="dashboard-stat-card stat-resume">
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-file-earmark-person"></i>
+
+                    </div>
+
+                    <div>
+                        <div class="stat-label">
+
+                            Total Resumes
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_resumes }}
+
+                        </div>
+
+                        <div class="stat-text">
+
+                            Uploaded resumes
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SAVED JOBS -->
+            <div class="col-md-4">
+
+                <div class="dashboard-stat-card stat-saved">
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-bookmark-heart"></i>
+
+                    </div>
+
+                    <div>
+                        <div class="stat-label">
+
+                            Saved Jobs
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_saved_jobs }}
+
+                        </div>
+
+                        <div class="stat-text">
+
+                            Jobs bookmarked
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- APPLICATIONS -->
+            <div class="col-md-4">
+
+                <div class="dashboard-stat-card stat-applications">
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-send-check"></i>
+
+                    </div>
+
+                    <div>
+                        <div class="stat-label">
+
+                            Applications
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_applications }}
+
+                        </div>
+
+                        <div class="stat-text">
+
+                            Total job applications
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="row g-4">
+
+            <!-- SEARCH JOBS -->
+            <div class="col-md-4">
+
+                <a
+                    href="{% url 'user_jobs' %}"
+                    class="text-decoration-none"
+                >
+
+                    <div class="dashboard-action-card quick-action-card">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <h5>
+                            Search Jobs
+                        </h5>
+
+                        <p>
+                            Explore and apply for available job opportunities.
+                        </p>
+
+                        <span class="action-link">
+
+                            Explore →
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <!-- AI RECOMMENDATION -->
+            <div class="col-md-4">
+
+                <a
+                    href="{% url 'upload_resume' %}"
+                    class="text-decoration-none"
+                >
+
+                    <div class="dashboard-action-card quick-action-card">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-stars"></i>
+                        </div>
+
+                        <h5>
+                            Job Recommendations
+                        </h5>
+
+                        <p>
+                            Upload your resume and get AI-powered job matching.
+                        </p>
+
+                        <span class="action-link">
+
+                            Upload →
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <!-- RESUME GENERATOR -->
+            <div class="col-md-4">
+
+                <a
+                    href="{% url 'resume_generator' %}"
+                    class="text-decoration-none"
+                >
+
+                    <div class="dashboard-action-card quick-action-card">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                        <h5>
+                            Resume Generator
+                        </h5>
+
+                        <p>
+                            Create professional resumes instantly.
+                        </p>
+
+                        <span class="action-link">
+
+                            Generate →
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

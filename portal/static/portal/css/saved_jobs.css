@@ -1,0 +1,436 @@
+/* ===== HEADER ===== */
+.jobs-header {
+
+    background: linear-gradient(
+        135deg,
+        #16325c,
+        #1f4e8c
+    );
+
+}
+
+/* ===== SAVED CARD ===== */
+.saved-card {
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    border: 1px solid #edf1f5;
+
+    transition: 0.3s ease;
+
+    height: 100%;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+
+}
+
+.saved-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+
+}
+
+/* ===== TOP ===== */
+.saved-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+/* ===== LOGO ===== */
+.saved-logo {
+
+    width: 72px;
+
+    height: 72px;
+
+    object-fit: contain;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #edf1f5;
+
+    padding: 8px;
+
+}
+
+/* ===== PLACEHOLDER ===== */
+.saved-placeholder {
+
+    width: 72px;
+
+    height: 72px;
+
+    border-radius: 14px;
+
+    background: #eef4ff;
+
+    color: #16325c;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    font-size: 1.4rem;
+
+}
+
+/* ===== DATE ===== */
+.saved-date {
+
+    font-size: 0.85rem;
+
+    color: #7b8794;
+
+}
+
+/* ===== TAGS ===== */
+.saved-tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+}
+
+/* ===== TAG ===== */
+.saved-tag {
+
+    background: #f4f7fb;
+
+    color: #16325c;
+
+    border-radius: 999px;
+
+    padding: 8px 14px;
+
+    font-size: 0.88rem;
+
+    font-weight: 500;
+
+}
+
+/* ===== SALARY TAG ===== */
+.salary-tag {
+
+    background: #eef4ff;
+
+    color: #1f3f79;
+
+}
+
+/* ===== DESCRIPTION ===== */
+.saved-description {
+
+    color: #555;
+
+    line-height: 1.7;
+
+    min-height: 60px;
+
+}
+
+/* ===== ACTIONS ===== */
+.saved-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+}
+
+/* ===== VIEW ===== */
+.btn-view {
+
+    flex: 1;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #1f3f79;
+
+    color: #1f3f79;
+
+    border-radius: 10px;
+
+    padding: 11px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.25s ease;
+
+}
+
+.btn-view:hover {
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+}
+
+/* ===== APPLY ===== */
+.btn-apply {
+
+    flex: 1;
+
+    text-align: center;
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+    border-radius: 10px;
+
+    padding: 11px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.25s ease;
+
+}
+
+.btn-apply:hover {
+
+    background: #16325c;
+
+    color: #ffffff;
+
+}
+
+/* ===== REMOVE ===== */
+.btn-remove {
+
+    width: 100%;
+
+    text-align: center;
+
+    background: #fff5f5;
+
+    border: 1px solid #ffccd2;
+
+    color: #dc3545;
+
+    border-radius: 10px;
+
+    padding: 11px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.25s ease;
+
+}
+
+.btn-remove:hover {
+
+    background: #dc3545;
+
+    color: #ffffff;
+
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-saved-state {
+
+    text-align: center;
+
+    padding: 90px 20px;
+
+}
+
+/* ===== EMPTY IMAGE ===== */
+.empty-saved-img {
+
+    width: 260px;
+
+    max-width: 100%;
+
+    margin-bottom: 24px;
+
+}
+
+/* ===== EMPTY TITLE ===== */
+.empty-saved-state h4 {
+
+    font-weight: 700;
+
+    color: #16325c;
+
+    margin-bottom: 12px;
+
+}
+
+/* ===== EMPTY TEXT ===== */
+.empty-saved-state p {
+
+    color: #6f7d90;
+
+    margin-bottom: 30px;
+
+    font-size: 1rem;
+
+}
+
+/* ===== EMPTY ACTIONS ===== */
+.empty-actions {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 14px;
+
+    flex-wrap: wrap;
+
+}
+
+/* ===== PRIMARY BUTTON ===== */
+.btn-empty-primary {
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+    padding: 12px 22px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.25s ease;
+
+}
+
+.btn-empty-primary:hover {
+
+    background: #16325c;
+
+    color: #ffffff;
+
+}
+
+/* ===== SECONDARY BUTTON ===== */
+.btn-empty-secondary {
+
+    background: #ffffff;
+
+    color: #1f3f79;
+
+    border: 1px solid #1f3f79;
+
+    padding: 12px 22px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition: 0.25s ease;
+
+}
+
+.btn-empty-secondary:hover {
+
+    background: #1f3f79;
+
+    color: #ffffff;
+
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .saved-actions {
+
+        flex-direction: column;
+
+    }
+
+    .btn-view,
+    .btn-apply,
+    .btn-remove {
+
+        width: 100%;
+
+    }
+
+    .empty-saved-state {
+
+        padding: 60px 20px;
+
+    }
+
+}
+
+.saved-apply-form {
+    display: flex;
+    flex: 1;
+    margin: 0;
+}
+
+.saved-apply-form .btn-apply {
+    border: 1px solid #1f3f79;
+    width: 100%;
+}
+
+.btn-apply.disabled {
+    background: #94a3b8;
+    border: 1px solid #94a3b8;
+    cursor: not-allowed;
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

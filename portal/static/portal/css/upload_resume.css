@@ -1,0 +1,198 @@
+/* =========================
+   HEADER
+========================= */
+.upload-header{
+    background:#1f3f79;
+}
+
+/* =========================
+   SECTION
+========================= */
+.upload-section{
+    background:#f5f7fb;
+    min-height:100vh;
+}
+
+/* =========================
+   CARD
+========================= */
+.upload-card{
+    background:#ffffff;
+
+    max-width:800px;
+    margin:auto;
+
+    padding:35px;
+
+    border-radius:30px;
+
+    border:1px solid #edf1f5;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,0.05);
+}
+
+/* =========================
+   LABEL
+========================= */
+.form-label{
+    font-weight:700;
+    color:#16325c;
+    margin-bottom:10px;
+}
+
+/* =========================
+   DRAG & DROP
+========================= */
+.drop-zone{
+    position:relative;
+
+    border:2px dashed #cbd5e1;
+
+    border-radius:24px;
+
+    background:#fbfcfe;
+
+    padding:55px 20px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:0.25s ease;
+}
+
+.drop-zone:hover{
+    border-color:#1f3f79;
+    background:#f8fbff;
+}
+
+.drop-zone.dragover{
+    border-color:#1f3f79;
+    background:#eef3ff;
+    transform:scale(1.01);
+}
+
+.drop-zone i{
+    font-size:55px;
+    color:#1f3f79;
+    margin-bottom:15px;
+}
+
+.drop-zone h5{
+    font-size:24px;
+    font-weight:800;
+    color:#16325c;
+    margin-bottom:10px;
+}
+
+.drop-zone p{
+    color:#7b8798;
+    margin-bottom:10px;
+}
+
+.upload-note{
+    color:#94a3b8;
+    font-size:13px;
+}
+
+.drop-zone input{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    opacity:0;
+
+    cursor:pointer;
+}
+
+/* =========================
+   FILE NAME
+========================= */
+.selected-file{
+    text-align:center;
+
+    margin-top:15px;
+
+    font-weight:600;
+
+    color:#1f3f79;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.custom-input{
+    border-radius:16px;
+
+    border:1px solid #dbe3ec;
+
+    background:#fbfcfe;
+
+    padding:14px 18px;
+
+    font-size:15px;
+
+    transition:0.25s ease;
+}
+
+.custom-input:focus{
+    border-color:#1f3f79;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 0 0 0.15rem rgba(31,63,121,0.10);
+}
+
+/* =========================
+   BUTTON
+========================= */
+.btn-upload{
+    width:100%;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#1f3f79;
+    color:#ffffff;
+
+    padding:16px;
+
+    font-size:16px;
+    font-weight:700;
+
+    transition:0.25s ease;
+}
+
+.btn-upload:hover{
+    background:#16325c;
+    transform:translateY(-2px);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width:768px){
+
+    .upload-card{
+        padding:24px;
+    }
+
+    .drop-zone{
+        padding:40px 15px;
+    }
+
+    .drop-zone h5{
+        font-size:20px;
+    }
+
+    .drop-zone i{
+        font-size:42px;
+    }
+
+}

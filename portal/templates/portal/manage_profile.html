@@ -1,0 +1,294 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Manage Profile{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/manage_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Manage Profile
+        </h1>
+
+        <p class="mb-0">
+            Update your personal information and professional details.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container py-5">
+
+    <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-lg-4">
+
+            <div class="profile-sidebar">
+
+                <!-- PROFILE IMAGE -->
+                <div class="profile-image-wrapper">
+
+                    {% if user_profile.profile_image %}
+
+                        <img
+                            src="{{ user_profile.profile_image.url }}"
+                            class="profile-image"
+                            alt="Profile Image"
+                        >
+
+                    {% else %}
+
+                        <div class="profile-placeholder">
+
+                            {{ user_profile.initials }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- NAME -->
+                <h4 class="fw-bold mt-4 mb-1">
+
+                    {{ user_profile.full_name }}
+
+                </h4>
+
+                <!-- EMAIL -->
+                <p class="profile-email">
+
+                    {{ user_profile.email }}
+
+                </p>
+
+                <!-- ROLE -->
+                <span class="profile-role">
+
+                    {{ user_profile.get_role_display }}
+
+                </span>
+
+                <!-- MEMBER -->
+                <div class="member-box mt-4">
+
+                    Joined on
+                    {{ user_profile.created_at|date:"d M Y" }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-8">
+
+            <div class="profile-card">
+
+                <!-- FORM -->
+                <form method="POST"
+                      enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+
+                        <!-- FIRST NAME -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                First Name
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="first_name"
+                                class="form-control"
+                                value="{{ user_profile.first_name }}"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- LAST NAME -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                Last Name
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="last_name"
+                                class="form-control"
+                                value="{{ user_profile.last_name }}"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- PHONE -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                Phone Number
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                class="form-control"
+                                value="{{ user_profile.phone }}"
+                            >
+
+                        </div>
+
+                        <!-- LOCATION -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                Location
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="location"
+                                class="form-control"
+                                value="{{ user_profile.location }}"
+                            >
+
+                        </div>
+
+                        <!-- SKILLS -->
+                        <div class="col-12 mb-4">
+
+                            <label class="form-label">
+
+                                Skills
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="skills"
+                                class="form-control"
+                                placeholder="Python, Django, HTML, CSS"
+                                value="{{ user_profile.skills }}"
+                            >
+
+                        </div>
+
+                        <!-- LINKEDIN -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                LinkedIn
+
+                            </label>
+
+                            <input
+                                type="url"
+                                name="linkedin"
+                                class="form-control"
+                                value="{{ user_profile.linkedin }}"
+                            >
+
+                        </div>
+
+                        <!-- GITHUB -->
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                GitHub
+
+                            </label>
+
+                            <input
+                                type="url"
+                                name="github"
+                                class="form-control"
+                                value="{{ user_profile.github }}"
+                            >
+
+                        </div>
+
+                        <!-- BIO -->
+                        <div class="col-12 mb-4">
+
+                            <label class="form-label">
+
+                                About Me
+
+                            </label>
+
+                            <textarea
+                                name="bio"
+                                rows="5"
+                                class="form-control"
+                                placeholder="Tell employers about yourself..."
+                            >{{ user_profile.bio }}</textarea>
+
+                        </div>
+
+                        <!-- PROFILE IMAGE -->
+                        <div class="col-12 mb-4">
+
+                            <label class="form-label">
+
+                                Profile Image
+
+                            </label>
+
+                            <input
+                                type="file"
+                                name="profile_image"
+                                class="form-control"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button
+                        type="submit"
+                        class="btn-save-profile"
+                    >
+
+                        Save Changes
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

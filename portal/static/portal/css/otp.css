@@ -1,0 +1,45 @@
+/* ===== PAGE ===== */
+.otp-section {
+    background: #1f3f79;
+    min-height: 90vh;
+}
+
+/* ===== CARD ===== */
+.otp-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ===== INPUT ===== */
+.otp-input {
+    font-size: 24px;
+    letter-spacing: 8px;
+    height: 50px;
+}
+
+/* ===== BUTTON ===== */
+.btn-otp {
+    background-color: #f4b400;
+    color: #16325c;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.btn-otp:hover {
+    background-color: #dca300;
+    color: #ffffff;
+}
+
+/* ===== RESEND LINK ===== */
+.resend-link {
+    color: #1f3f79;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.resend-link:hover {
+    text-decoration: underline;
+}

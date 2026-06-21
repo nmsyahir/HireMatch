@@ -1,0 +1,332 @@
+{% extends base_template %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Job Details{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/job_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white d-flex align-items-center">
+
+        {% if job.company.logo %}
+
+            <img
+                src="{{ job.company.logo.url }}"
+                alt="Company Logo"
+                class="company-logo me-3"
+            >
+
+        {% else %}
+
+            <img
+                src="{% static 'portal/images/default-company.png' %}"
+                class="company-logo me-3"
+            >
+
+        {% endif %}
+
+        <div>
+
+            <h1 class="fw-bold">
+                {{ job.title }}
+            </h1>
+
+            <p class="mb-0">
+                <a href="{% url 'public_company_detail' job.company.id %}" class="company-profile-link text-white">{{ job.company.name }}</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container py-4">
+
+    <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-lg-8">
+
+            <!-- DESCRIPTION -->
+            <div class="detail-card mb-4">
+
+                <h5>
+                    Job Description
+                </h5>
+
+                <p>
+                    {{ job.description|linebreaks }}
+                </p>
+
+            </div>
+
+            <!-- REQUIREMENTS -->
+            <div class="detail-card mb-4">
+
+                <h5>
+                    Requirements
+                </h5>
+
+                {% if job.skills_required %}
+
+                    <ul>
+
+                        {% for item in job.skills_required|cut:" "|split:"," %}
+
+                            <li>
+                                {{ item }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                {% else %}
+
+                    <p class="text-muted">
+                        No requirements provided.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+            <!-- QUALIFICATIONS -->
+            <div class="detail-card mb-4">
+
+                <h5>
+                    Qualifications
+                </h5>
+
+                <p>
+                    <strong>Experience:</strong>
+                    {{ job.experience_required|default:"Not specified" }}
+                </p>
+
+                <p>
+                    <strong>Education:</strong>
+                    {{ job.education_required|default:"Not specified" }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-4">
+
+            <div class="sticky-sidebar">
+
+                <!-- JOB SUMMARY -->
+                <div class="side-card mb-3">
+
+                    <h5 class="fw-bold mb-3">
+                        Job Summary
+                    </h5>
+
+                    <!-- LOCATION -->
+                    <div class="summary-item">
+                        📍 {{ job.location|default:"Not specified" }}
+                    </div>
+
+                    <!-- JOB TYPE -->
+                    <div class="summary-item">
+                        🕒 {{ job.job_type|default:"Not specified" }}
+                    </div>
+
+                    <!-- APPLY -->
+                    {% if user.role != 'job_seeker' %}
+
+                        <button class="btn btn-secondary w-100 mt-3" disabled>
+                            Job Seekers Only
+                        </button>
+
+                    {% elif applied %}
+
+                        <button
+                            class="btn btn-secondary w-100 mt-3"
+                            disabled
+                        >
+                            Already Applied
+                        </button>
+
+                    {% elif job.status != 'open' %}
+
+                        <button class="btn btn-secondary w-100 mt-3" disabled>
+                            Applications Closed
+                        </button>
+
+                    {% elif job.is_filled %}
+
+                        <button class="btn btn-secondary w-100 mt-3" disabled>
+                            Position Filled
+                        </button>
+
+                    {% elif not has_resume %}
+
+                        <a href="{% url 'upload_resume' %}?job_id={{ job.id }}" class="btn btn-apply w-100 mt-3">
+                            <i class="bi bi-file-earmark-arrow-up me-2"></i>
+                            Upload Resume to Apply
+                        </a>
+
+                    {% else %}
+
+                        <form method="POST" action="{% url 'apply_job' job.id %}" id="applyJobForm">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-apply w-100 mt-3" onclick="confirmApply()">
+                                Apply Now
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                    {% if user.role == 'job_seeker' %}
+                    <!-- SAVE -->
+                    {% if saved %}
+
+                        <form
+                            method="POST"
+                            action="{% url 'remove_saved_job' job.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-outline-danger w-100 mt-2"
+                            >
+                                Remove Saved
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <form
+                            method="POST"
+                            action="{% url 'save_job' job.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-save w-100 mt-2"
+                            >
+                                Save Job
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+                    {% endif %}
+
+                <!-- CHAT -->
+                {% if can_chat %}
+
+                    <a
+                        href="{% url 'chat_room' job.id job.company.employer.id %}"
+                        target="_blank"
+                        rel="noopener"
+                        class="btn btn-chat w-100 mt-2"
+                    >
+                        Chat with Employer
+                    </a>
+
+                {% elif user.role == 'job_seeker' %}
+
+                    <button
+                        class="btn btn-secondary w-100 mt-2"
+                        disabled
+                    >
+                        Apply to Unlock Chat
+                    </button>
+
+                {% endif %}
+
+                </div>
+
+                <!-- COMPANY -->
+                <div class="side-card text-center">
+
+                    {% if job.company.logo %}
+
+                        <img
+                            src="{{ job.company.logo.url }}"
+                            class="company-logo-side mb-3"
+                        >
+
+                    {% else %}
+
+                        <img
+                            src="{% static 'portal/images/default-company.png' %}"
+                            class="company-logo-side mb-3"
+                        >
+
+                    {% endif %}
+
+                    <h6 class="fw-bold">
+                        <a href="{% url 'public_company_detail' job.company.id %}" class="company-profile-link">{{ job.company.name }}</a>
+                    </h6>
+
+                    <p class="text-muted small mb-0">
+                        {{ job.company.industry }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    function confirmApply() {
+
+        Swal.fire({
+
+            title: 'Apply for this job?',
+
+            text: 'Your application will be submitted.',
+
+            icon: 'question',
+
+            showCancelButton: true,
+
+            confirmButtonColor: '#28a745',
+
+            cancelButtonColor: '#d33',
+
+            confirmButtonText: 'Yes, Apply'
+
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                document.getElementById('applyJobForm').submit();
+
+            }
+
+        });
+
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background: #1f3f79;
+    color: white;
+    padding: 70px 0;
+}
+
+.hero-row {
+    min-height: 72vh;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.hero-title span {
+    color: #f4b400;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+.hero-image {
+    max-height: 450px;
+}
+
+/* ===== HERO BUTTONS ===== */
+.btn-hero-primary {
+    background-color: #f4b400;
+    color: #16325c;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 12px 22px;
+    border: none;
+}
+
+.btn-hero-primary:hover {
+    background-color: #dca300;
+}
+
+.btn-hero-secondary {
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 8px;
+    padding: 12px 22px;
+}
+
+.btn-hero-secondary:hover {
+    background-color: #fff;
+    color: #16325c;
+}
+
+/* ===== SECTION ===== */
+.section-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+}
+
+.section-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* ===== SMALL UI ===== */
+.section-line {
+    width: 60px;
+    height: 5px;
+    background-color: #f4b400;
+}
+
+/* ===== FEATURED CARDS ===== */
+.latest-jobs-section,
+.about-preview-section {
+    background-color: #ffffff;
+}

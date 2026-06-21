@@ -1,0 +1,105 @@
+/* HEADER */
+.jobs-header {
+    background: #1f3f79;
+}
+
+/* CONTAINER */
+.faq-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+/* ITEM */
+.faq-item {
+    margin-bottom: 12px;
+}
+
+/* QUESTION */
+.faq-question {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+
+    padding: 15px 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-weight: 600;
+    color: #16325c;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* HOVER EFFECT */
+.faq-question:hover {
+    background: #f8f9fb;
+}
+
+/* ACTIVE STATE */
+.faq-question.active {
+    background: #1f3f79;
+    color: #fff;
+}
+
+/* ICON */
+.faq-icon {
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.faq-question.active .faq-icon {
+    transform: rotate(180deg);
+}
+
+/* ANSWER */
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+
+    background: #f8f9fb;
+    border-left: 1px solid #e9ecef;
+    border-right: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+
+    border-radius: 0 0 10px 10px;
+
+    padding: 0 18px;
+    color: #555;
+
+    transition: max-height 0.3s ease;
+}
+
+/* OPEN STATE SPACING */
+.faq-question.active + .faq-answer {
+    padding: 15px 18px;
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

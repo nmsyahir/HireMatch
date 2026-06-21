@@ -1,0 +1,300 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Job Recommendations{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/recommendations.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="reco-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Recommended Jobs
+        </h1>
+
+        <p class="mb-0">
+            Intelligent job matches based on your resume, skills, and experience.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container mt-4">
+
+{% if recommendations %}
+
+<!-- TOTAL AND EXPLANATION -->
+<div class="recommendation-summary mb-3">
+    <p class="text-muted mb-0">Showing {{ recommendations|length }} matched job(s)</p>
+    <button type="button" class="recommendation-info-btn" data-bs-toggle="modal" data-bs-target="#recommendationInfoModal" title="How recommendations work" aria-label="How recommendations work">
+        <i class="bi bi-info-lg"></i>
+    </button>
+</div>
+
+<div class="modal fade recommendation-modal" id="recommendationInfoModal" tabindex="-1" aria-labelledby="recommendationInfoTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="recommendationInfoTitle">How HireMatch Recommendations Work</h5>
+                    <p class="mb-0">Understand how jobs are matched and ranked for you.</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion recommendation-accordion" id="recommendationAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#recommendationMethod" aria-expanded="true" aria-controls="recommendationMethod">
+                                How are jobs matched with my resume?
+                            </button>
+                        </h2>
+                        <div id="recommendationMethod" class="accordion-collapse collapse show" data-bs-parent="#recommendationAccordion">
+                            <div class="accordion-body">
+                                HireMatch extracts text from your latest uploaded resume and compares it with available job information using TF-IDF and cosine similarity. Jobs with stronger textual similarity are ranked higher.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#recommendationPercentage" aria-expanded="false" aria-controls="recommendationPercentage">
+                                What does the recommendation percentage mean?
+                            </button>
+                        </h2>
+                        <div id="recommendationPercentage" class="accordion-collapse collapse" data-bs-parent="#recommendationAccordion">
+                            <div class="accordion-body">
+                                The percentage is a textual similarity score used to compare opportunities. Scores from 40% are Excellent, 25-39% Good, 10-24% Average, and below 10% Low. The top-ranked job is labelled Best Match only when it reaches at least 25%. This score does not represent your probability of being hired.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#recommendationSkills" aria-expanded="false" aria-controls="recommendationSkills">
+                                What are matched and missing skills?
+                            </button>
+                        </h2>
+                        <div id="recommendationSkills" class="accordion-collapse collapse" data-bs-parent="#recommendationAccordion">
+                            <div class="accordion-body">
+                                Matched skills are requirements found in both your resume and the job posting. Missing skills are requirements mentioned by the employer that were not detected in your latest resume.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+{% for rec in recommendations %}
+
+<div class="col-lg-6 mb-4">
+
+    <!-- FIXED CARD -->
+    <div class="reco-card d-flex flex-column h-100 {% if forloop.first and rec.score >= 25 %}best-match-card{% endif %}">
+
+        <!-- TOP -->
+        <div class="reco-top">
+
+            <!-- LEFT -->
+            <div class="d-flex gap-3">
+
+                <!-- COMPANY LOGO -->
+                {% if rec.job.company.logo %}
+
+                    <img
+                        src="{{ rec.job.company.logo.url }}"
+                        class="reco-logo"
+                        alt="Company Logo"
+                    >
+
+                {% else %}
+
+                    <div class="reco-placeholder">
+
+                        {{ rec.job.company.name|slice:":1" }}
+
+                    </div>
+
+                {% endif %}
+
+                <!-- INFO -->
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        {{ rec.job.title }}
+                    </h5>
+
+                    <p class="text-muted mb-2">
+                        <a href="{% url 'public_company_detail' rec.job.company.id %}" class="company-profile-link">{{ rec.job.company.name }}</a>
+                    </p>
+
+                    <!-- MATCH BADGE -->
+                    {% if forloop.first and rec.score >= 25 %}
+
+                        <span class="match-badge excellent">
+                            Best Match
+                        </span>
+
+                    {% elif rec.score >= 40 %}
+
+                        <span class="match-badge excellent">
+                            Excellent Match
+                        </span>
+
+                    {% elif rec.score >= 25 %}
+
+                        <span class="match-badge good">
+                            Good Match
+                        </span>
+
+                    {% elif rec.score >= 10 %}
+
+                        <span class="match-badge average">
+                            Average Match
+                        </span>
+
+                    {% else %}
+
+                        <span class="match-badge low">
+                            Low Match
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- MATCH CIRCLE -->
+            <div
+                class="circle-progress"
+                style="--value: {{ rec.score|floatformat:0 }};"
+            >
+
+                <span>
+                    {{ rec.score|floatformat:0 }}%
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- TAGS -->
+        <div class="reco-tags mt-3">
+
+            <span class="reco-tag">
+                <i class="bi bi-geo-alt-fill location-icon"></i> {{ rec.job.location }}
+            </span>
+
+            <span class="reco-tag">
+                <i class="bi bi-clock-fill type-icon"></i> {{ rec.job.job_type }}
+            </span>
+
+            {% if rec.job.salary %}
+
+            <span class="reco-tag salary-tag">
+                <i class="bi bi-cash-stack salary-icon"></i> {{ rec.job.salary }}
+            </span>
+
+            {% endif %}
+
+        </div>
+
+        <!-- MATCH INFO -->
+        <div class="matched-info mt-3">
+
+            <div>
+                <strong>Matched Skills:</strong>
+                {{ rec.matched_skills|default:"Upload a newer resume to refresh skill explanation." }}
+            </div>
+
+            <div class="mt-1">
+                <strong>Missing Skills:</strong>
+                {{ rec.missing_skills|default:"No major missing skill detected." }}
+            </div>
+
+        </div>
+
+        <!-- DESCRIPTION -->
+        <p class="reco-description mt-3">
+
+            {{ rec.job.description|truncatewords:20 }}
+
+        </p>
+
+        <!-- FIXED BUTTON -->
+        <div class="mt-auto pt-3">
+
+            <a
+                href="{% url 'job_detail' rec.job.id %}"
+                class="btn btn-outline-primary w-100"
+            >
+                View Details
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<!-- EMPTY -->
+<div class="empty-state">
+
+    <img
+        src="{% static 'portal/images/undraw_empty_4zx0.svg' %}"
+        alt="No recommendations"
+        class="empty-img"
+    >
+
+    <h4>
+        No recommendations yet
+    </h4>
+
+    <p>
+        Please upload your resume first so HireMatch can compare your skills, experience, and education with available jobs.
+    </p>
+
+    <div class="empty-actions">
+
+        <a
+            href="{% url 'upload_resume' %}"
+            class="btn-empty-primary"
+        >
+            Upload Resume
+        </a>
+
+        <a
+            href="{% url 'user_jobs' %}"
+            class="btn-empty-secondary"
+        >
+            Browse Jobs
+        </a>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

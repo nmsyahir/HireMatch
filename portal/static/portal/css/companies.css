@@ -1,0 +1,187 @@
+/* ===== HEADER ===== */
+.page-header-section {
+    background: linear-gradient(
+        135deg,
+        #1f3f79,
+        #16325c
+    );
+    color: #ffffff;
+}
+
+.page-title {
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.page-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+/* ===== SEARCH BOX ===== */
+.search-box {
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 16px;
+    border: 1px solid #eeeeee;
+}
+
+/* ===== SEARCH INPUT ===== */
+.custom-input {
+    height: 52px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    padding: 0 16px;
+    transition: all 0.3s ease;
+    box-shadow: none;
+}
+
+.custom-input:focus {
+    border-color: #1f3f79;
+    box-shadow: 0 0 0 0.15rem rgba(31, 63, 121, 0.15);
+}
+
+/* ===== SEARCH BUTTON ===== */
+.btn-search {
+    background-color: #1f3f79;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    height: 52px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    background-color: #16325c;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ===== COMPANY CARD ===== */
+.custom-card {
+    border: 1px solid #eeeeee;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    height: 100%;
+}
+
+.custom-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== CARD BODY ===== */
+.custom-card .card-body {
+    padding: 25px;
+}
+
+/* ===== COMPANY LOGO ===== */
+.company-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 14px;
+    background-color: #ffffff;
+    padding: 5px;
+    border: 1px solid #eeeeee;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== COMPANY TITLE ===== */
+.job-card-title {
+    color: #16325c;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+/* ===== INDUSTRY ===== */
+.job-card-company {
+    color: #1f3f79;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* ===== LOCATION ===== */
+.job-card-meta {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+/* ===== DESCRIPTION ===== */
+.text-muted {
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* ===== BUTTON ===== */
+.btn-outline-primary {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #1f3f79;
+    border-color: #1f3f79;
+}
+
+/* ===== EMPTY STATE ===== */
+.text-center h5 {
+    color: #6c757d;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .page-title {
+        font-size: 30px;
+    }
+
+    .search-box {
+        padding: 18px;
+    }
+
+    .custom-card .card-body {
+        padding: 22px;
+    }
+
+}
+
+.page-header-section .company-location {
+    color: #ffffff;
+    opacity: 0.9;
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}

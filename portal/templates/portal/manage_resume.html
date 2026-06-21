@@ -1,0 +1,205 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Manage Resume{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/manage_resume.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Manage Resume
+        </h1>
+
+        <p>
+            Manage your uploaded resume documents
+        </p>
+
+    </div>
+
+</section>
+
+<div class="container py-4">
+
+    {% if resume %}
+
+    <!-- RESUME CARD -->
+    <div class="resume-card active-resume">
+
+        <!-- LEFT -->
+        <div class="resume-left">
+
+            <!-- PDF ICON -->
+            <div class="pdf-icon">
+                📄
+            </div>
+
+            <!-- INFO -->
+            <div class="resume-info">
+
+                <div class="title-wrapper">
+
+                    <h3>
+                        Current Resume
+                    </h3>
+
+                    <span class="badge-active">
+                        Active
+                    </span>
+
+                </div>
+
+                <p class="resume-file">
+                    {{ resume.resume_file.name }}
+                </p>
+
+                <p class="upload-date">
+                    Uploaded on
+                    {{ resume.uploaded_at|date:"d M Y" }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="resume-actions">
+
+            <!-- VIEW -->
+            <a href="{% url 'view_resume' resume.id %}"
+               target="_blank"
+               rel="noopener"
+               class="btn-primary-custom">
+
+                View Resume
+
+            </a>
+
+            <!-- UPLOAD -->
+            <a href="{% url 'upload_resume' %}"
+               class="btn-outline-custom">
+
+                Upload New Resume
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- RESUME TIPS -->
+    <div class="tips-card">
+
+        <div class="tips-header"
+             onclick="toggleTips()">
+
+            <div class="tips-title">
+
+                <span class="tips-icon">
+                    💡
+                </span>
+
+                <h4>
+                    Resume Tips
+                </h4>
+
+            </div>
+
+            <span id="tipsArrow" class="tips-arrow">
+                ▼
+            </span>
+
+        </div>
+
+        <!-- DROPDOWN CONTENT -->
+        <div id="tipsContent" class="tips-content">
+
+            <div class="tip-item">
+                ✔ Tailor your resume to the role by highlighting the most relevant skills and experience.
+            </div>
+
+            <div class="tip-item">
+                ✔ Support technical skills with projects, responsibilities, or practical examples.
+            </div>
+
+            <div class="tip-item">
+                ✔ Use standard section headings and a clean, ATS-friendly layout.
+            </div>
+
+            <div class="tip-item">
+                ✔ Describe achievements with measurable results whenever possible.
+            </div>
+
+            <div class="tip-item">
+                ✔ Proofread your contact details, dates, links, and spelling before applying.
+            </div>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+
+        <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration" alt="No resume uploaded">
+
+        <h3>
+            No Resume Uploaded
+        </h3>
+
+        <p>
+            Upload your resume to start receiving intelligent job recommendations.
+        </p>
+
+        <a href="{% url 'upload_resume' %}"
+           class="btn-primary-custom">
+
+            Upload Resume
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+
+function toggleTips() {
+
+    const content = document.getElementById("tipsContent");
+
+    const arrow = document.getElementById("tipsArrow");
+
+    if (content.style.display === "block") {
+
+        content.style.display = "none";
+
+        arrow.style.transform = "rotate(0deg)";
+
+    }
+
+    else {
+
+        content.style.display = "block";
+
+        arrow.style.transform = "rotate(180deg)";
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

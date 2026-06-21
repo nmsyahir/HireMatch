@@ -1,0 +1,79 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Company Profile{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/setup_company.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">Company Profile</h1>
+        <p class="mb-0">Update your company information shown to applicants.</p>
+    </div>
+</section>
+
+<div class="setup-company-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="setup-company-card">
+                    <div class="setup-company-body">
+                        <h2 class="setup-title">Edit Company Profile</h2>
+                        <p class="setup-subtitle">
+                            Keep company details accurate so candidates understand your organization.
+                        </p>
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="mb-4">
+                                <label class="form-label">Company Name</label>
+                                <input type="text" name="name" class="form-control" value="{{ company.name }}" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Industry</label>
+                                <input type="text" name="industry" class="form-control" value="{{ company.industry }}">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Company Location</label>
+                                <input type="text" name="location" class="form-control" value="{{ company.location }}">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Website</label>
+                                <input type="url" name="website" class="form-control" value="{{ company.website }}">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Company Logo</label>
+                                {% if company.logo %}
+                                    <div class="mb-3">
+                                        <img src="{{ company.logo.url }}" alt="{{ company.name }} logo" style="max-height: 90px;">
+                                    </div>
+                                {% endif %}
+                                <input type="file" name="logo" class="form-control">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Company Description</label>
+                                <textarea name="description" rows="5" class="form-control">{{ company.description }}</textarea>
+                            </div>
+
+                            <button type="submit" class="btn-company-create w-100">
+                                Save Company Profile
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

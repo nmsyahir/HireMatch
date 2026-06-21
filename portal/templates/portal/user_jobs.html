@@ -1,0 +1,375 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Search Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/jobs.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Search Jobs
+        </h1>
+
+        <p>
+            Find opportunities from the jobs.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- SHORTCUT -->
+<div class="shortcut-section">
+
+    <div class="container">
+
+        <div class="shortcut-wrapper">
+
+            <a
+                href="{% url 'resume_generator' %}"
+                class="shortcut-card"
+            >
+                Resume Generator
+            </a>
+
+            <a
+                href="{% url 'upload_resume' %}"
+                class="shortcut-card"
+            >
+                Upload Resume
+            </a>
+
+            <a
+                href="{% url 'faq' %}"
+                class="shortcut-card"
+            >
+                FAQ
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SEARCH -->
+<div class="container">
+
+    <div class="search-box shadow-sm">
+
+        <form
+            method="GET"
+            id="searchForm"
+            class="row g-3 align-items-center"
+        >
+
+            <div class="col-lg-6">
+                <div class="job-search-field">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                <input
+                    type="text"
+                    name="q"
+                    id="jobSearch"
+                    class="form-control"
+                    placeholder="Search jobs, companies, skills, or locations"
+                    value="{{ query }}"
+                    autocomplete="off"
+                >
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <select name="job_type" class="form-select">
+                    <option value="" {% if not job_type %}selected{% endif %}>All Job Types</option>
+                    <option value="Full-Time" {% if job_type == 'Full-Time' %}selected{% endif %}>Full-Time</option>
+                    <option value="Part-Time" {% if job_type == 'Part-Time' %}selected{% endif %}>Part-Time</option>
+                    <option value="Internship" {% if job_type == 'Internship' %}selected{% endif %}>Internship</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <input type="number" name="salary_min" class="form-control" placeholder="Min salary" value="{{ salary_min }}" step="100">
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <input type="number" name="salary_max" class="form-control" placeholder="Max salary" value="{{ salary_max }}" step="100">
+            </div>
+
+            <div class="col-12 d-none">
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- JOB LIST -->
+<div class="container mt-4">
+
+    <p class="text-muted mb-4">
+        Showing {{ jobs|length }} job(s)
+    </p>
+
+    <div class="row">
+
+        {% for job in jobs %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="job-card">
+
+                <!-- TOP -->
+                <div class="d-flex align-items-center gap-3 mb-3">
+
+                    <!-- LOGO -->
+                    {% if job.company.logo %}
+
+                        <img
+                            src="{{ job.company.logo.url }}"
+                            class="job-company-logo"
+                            alt="Company Logo"
+                        >
+
+                    {% else %}
+
+                        <div class="job-company-placeholder">
+
+                            {{ job.company.name|slice:":1" }}
+
+                        </div>
+
+                    {% endif %}
+
+                    <!-- TITLE -->
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+                            {{ job.title }}
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            <a href="{% url 'public_company_detail' job.company.id %}" class="text-decoration-none">
+                                {{ job.company.name }}
+                            </a>
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- TAGS -->
+                <div class="job-tags mb-3">
+
+                    {% if job.job_type %}
+
+                    <span class="job-tag">
+                        {{ job.job_type }}
+                    </span>
+
+                    {% endif %}
+
+                    {% if job.location %}
+
+                    <span class="job-tag">
+                        <i class="bi bi-geo-alt-fill location-icon"></i> {{ job.location }}
+                    </span>
+
+                    {% endif %}
+
+                    {% if job.salary %}
+
+                    <span class="job-tag salary-tag">
+                        <i class="bi bi-cash-stack salary-icon"></i> {{ job.salary }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <!-- DESCRIPTION -->
+                <p class="job-description">
+
+                    {{ job.description|truncatewords:18 }}
+
+                </p>
+
+                <!-- BUTTONS -->
+                <div class="d-flex gap-2 mt-4">
+
+                    <!-- DETAILS -->
+                    <a
+                        href="{% url 'job_detail' job.id %}"
+                        class="btn btn-outline-primary flex-grow-1"
+                    >
+                        View Details
+                    </a>
+
+                    <!-- SAVE -->
+                    <form
+                        method="POST"
+                        action="{% if job.id in saved_job_ids %}{% url 'remove_saved_job' job.id %}{% else %}{% url 'save_job' job.id %}{% endif %}"
+                        data-save-url="{% url 'save_job' job.id %}"
+                        data-remove-url="{% url 'remove_saved_job' job.id %}"
+                        class="save-job-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="btn btn-save-job {% if job.id in saved_job_ids %}saved{% endif %}"
+                        >
+
+                            <span class="save-icon">
+
+                                {% if job.id in saved_job_ids %}
+                                    &hearts;
+                                {% else %}
+                                    &#9825;
+                                {% endif %}
+
+                            </span>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <!-- EMPTY -->
+        <div class="col-12">
+
+            <div class="empty-job-state text-center">
+
+                <img
+                    src="{% static 'portal/images/undraw_empty_4zx0.svg' %}"
+                    class="empty-job-img mb-4"
+                    alt="No jobs found"
+                >
+
+                <h4 class="fw-bold">
+                    No jobs found
+                </h4>
+
+                <p class="text-muted mb-4">
+                    Try using different keywords or locations.
+                </p>
+
+                <a
+                    href="{% url 'user_jobs' %}"
+                    class="btn btn-search"
+                >
+                    Reset Search
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+    let timeout = null;
+
+    const form = document.getElementById('searchForm');
+
+    const lastFocusedSearch = sessionStorage.getItem('lastFocusedSearch');
+
+    if (lastFocusedSearch) {
+        const focusedInput = document.getElementById(lastFocusedSearch);
+
+        if (focusedInput) {
+            focusedInput.focus();
+            focusedInput.setSelectionRange(
+                focusedInput.value.length,
+                focusedInput.value.length
+            );
+        }
+
+        sessionStorage.removeItem('lastFocusedSearch');
+    }
+
+    function autoSearch() {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            if (document.activeElement && document.activeElement.id) {
+                sessionStorage.setItem(
+                    'lastFocusedSearch',
+                    document.activeElement.id
+                );
+            }
+
+            form.submit();
+        }, 400);
+    }
+
+    form.querySelectorAll('input, select').forEach(control => {
+        const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
+        control.addEventListener(eventName, autoSearch);
+    });
+
+    const saveForms = document.querySelectorAll('.save-job-form');
+
+    saveForms.forEach(saveForm => {
+        saveForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const button = saveForm.querySelector('.btn-save-job');
+            const icon = saveForm.querySelector('.save-icon');
+            const isSaved = button.classList.contains('saved');
+
+            saveForm.action = isSaved
+                ? saveForm.dataset.removeUrl
+                : saveForm.dataset.saveUrl;
+
+            const response = await fetch(
+                saveForm.action,
+                {
+                    method: 'POST',
+                    body: new FormData(saveForm),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+
+            button.classList.toggle('saved', data.saved);
+            icon.innerHTML = data.saved ? '&hearts;' : '&#9825;';
+
+            saveForm.action = data.saved
+                ? saveForm.dataset.removeUrl
+                : saveForm.dataset.saveUrl;
+        });
+    });
+
+</script>
+
+{% endblock %}

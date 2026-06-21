@@ -1,0 +1,335 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}Edit Job{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/edit_job.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Edit Job
+        </h1>
+
+        <p class="mb-0">
+            Update your job vacancy information.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="edit-job-section py-5">
+
+    <div class="container">
+
+        <div class="edit-job-card">
+
+            <!-- FORM HEADER -->
+            <div class="edit-form-header">
+
+                <h4>
+                    Update Job Information
+                </h4>
+
+                <p>
+                    Modify job details, requirements, and vacancy information.
+                </p>
+
+            </div>
+
+            <form method="POST" id="editJobForm">
+
+                {% csrf_token %}
+
+                <!-- JOB TITLE -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Job Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        class="form-control job-input"
+                        value="{{ job.title }}"
+                        placeholder="e.g Backend Developer"
+                        required
+                    >
+
+                </div>
+
+                <!-- ROW -->
+                <div class="row">
+
+                    <!-- LOCATION -->
+                    <div class="col-md-4 mb-4">
+
+                        <label class="form-label">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            class="form-control job-input"
+                            value="{{ job.location }}"
+                            placeholder="e.g Cyberjaya"
+                        >
+
+                    </div>
+
+                    <!-- JOB TYPE -->
+                    <div class="col-md-4 mb-4">
+
+                        <label class="form-label">
+                            Job Type
+                        </label>
+
+                        <select
+                            name="job_type"
+                            class="form-select job-input"
+                        >
+
+                            <option value="">
+                                Select Type
+                            </option>
+
+                            <option value="Full-Time" {% if job.job_type == "Full-Time" %}selected{% endif %}>
+                                Full-Time
+                            </option>
+
+                            <option value="Part-Time" {% if job.job_type == "Part-Time" %}selected{% endif %}>
+                                Part-Time
+                            </option>
+
+                            <option value="Internship" {% if job.job_type == "Internship" %}selected{% endif %}>
+                                Internship
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- SALARY -->
+                    <div class="col-md-4 mb-4">
+
+                        <label class="form-label">
+                            Salary
+                        </label>
+
+                        <input
+                            type="text"
+                            name="salary"
+                            class="form-control job-input"
+                            value="{{ job.salary }}"
+                            placeholder="e.g RM4500"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">
+                            Minimum Salary
+                        </label>
+                        <input
+                            type="number"
+                            name="salary_min"
+                            class="form-control job-input"
+                            step="100"
+                            value="{{ job.salary_min }}"
+                            placeholder="e.g 3000"
+                        >
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">
+                            Maximum Salary
+                        </label>
+                        <input
+                            type="number"
+                            name="salary_max"
+                            class="form-control job-input"
+                            step="100"
+                            value="{{ job.salary_max }}"
+                            placeholder="e.g 5000"
+                        >
+                    </div>
+                </div>
+
+                <!-- VACANCIES -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Number of Vacancies
+                    </label>
+
+                    <input
+                        type="number"
+                        name="vacancies"
+                        class="form-control job-input"
+                        value="{{ job.vacancies }}"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">
+                        Job Status
+                    </label>
+                    <select
+                        name="status"
+                        class="form-select job-input"
+                    >
+                        <option value="open" {% if job.status == "open" %}selected{% endif %}>
+                            Open
+                        </option>
+                        <option value="closed" {% if job.status == "closed" %}selected{% endif %}>
+                            Closed
+                        </option>
+                    </select>
+                </div>
+
+                <!-- JOB DESCRIPTION -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Job Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control job-textarea"
+                        rows="7"
+                        placeholder="Describe responsibilities, technologies, and expectations..."
+                        required
+                    >{{ job.description }}</textarea>
+
+                </div>
+
+                <!-- SKILLS REQUIRED -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Skills Required
+                    </label>
+
+                    <textarea
+                        name="skills_required"
+                        class="form-control job-textarea"
+                        rows="3"
+                        placeholder="Python, Django, SQL, REST API"
+                    >{{ job.skills_required }}</textarea>
+
+                </div>
+
+                <!-- ROW -->
+                <div class="row">
+
+                    <!-- EXPERIENCE -->
+                    <div class="col-md-6 mb-4">
+
+                        <label class="form-label">
+                            Experience Required
+                        </label>
+
+                        <input
+                            type="text"
+                            name="experience_required"
+                            class="form-control job-input"
+                            value="{{ job.experience_required }}"
+                            placeholder="e.g 2 years"
+                        >
+
+                    </div>
+
+                    <!-- EDUCATION -->
+                    <div class="col-md-6 mb-4">
+
+                        <label class="form-label">
+                            Education Required
+                        </label>
+
+                        <input
+                            type="text"
+                            name="education_required"
+                            class="form-control job-input"
+                            value="{{ job.education_required }}"
+                            placeholder="e.g Bachelor Degree"
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="edit-button-group">
+
+                    <button
+                        type="submit"
+                        class="btn-submit-job"
+                    >
+
+                        <i class="bi bi-check-circle-fill me-2"></i>
+
+                        Update Job
+
+                    </button>
+
+                    <a
+                        href="{% url 'manage_jobs' %}"
+                        class="btn-cancel-job"
+                    >
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const editJobForm = document.getElementById('editJobForm');
+
+    editJobForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Update job?',
+            text: 'The latest job details will be saved.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#1f3f79'
+        }).then(result => {
+            if (result.isConfirmed) {
+                editJobForm.submit();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

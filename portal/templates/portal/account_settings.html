@@ -1,0 +1,329 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/account_settings.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header">
+
+    <div class="container py-5 text-white">
+
+        <h1 class="fw-bold">
+            Account Settings
+        </h1>
+
+        <p class="mb-0">
+            Manage your account security and password settings.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- MAIN -->
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="settings-card">
+
+                <!-- SWEETALERT -->
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <!-- MESSAGES -->
+                {% if messages %}
+
+                    <script>
+
+                        {% for message in messages %}
+
+                        {% if 'account' in message.tags %}
+
+                        Swal.fire({
+
+                            icon:
+                            '{% if message.tags == "success" %}success{% else %}error{% endif %}',
+
+                            title:
+                            '{% if message.tags == "success" %}Success{% else %}Error{% endif %}',
+
+                            text: '{{ message }}',
+
+                            confirmButtonColor: '#16325c',
+
+                            timer: 2200,
+
+                            showConfirmButton: false
+
+                        });
+
+                        {% endif %}
+
+                        {% endfor %}
+
+                    </script>
+
+                {% endif %}
+
+                <!-- ACCOUNT INFO -->
+                <div class="account-info">
+
+                    <!-- EMAIL -->
+                    <div class="info-box">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            value="{{ user.email }}"
+                            disabled
+                        >
+
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="info-box mt-4">
+
+                        <label>
+                            Verification Status
+                        </label>
+
+                        <div class="verification-status">
+
+                            {% if user.is_verified %}
+
+                            <div class="verified-card">
+
+                                <div class="verified-icon">
+
+                                    <i class="bi bi-patch-check-fill"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="mb-1">
+                                        Verified Account
+                                    </h6>
+
+                                    <p class="mb-0">
+                                        Your email has been verified successfully.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            {% else %}
+
+                            <div class="unverified-card">
+
+                                <div class="unverified-icon">
+
+                                    <i class="bi bi-shield-exclamation"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h6 class="mb-1">
+                                        Not Verified
+                                    </h6>
+
+                                    <p class="mb-0">
+                                        Your account verification is incomplete.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- DIVIDER -->
+                <hr class="settings-divider">
+
+                <!-- PASSWORD FORM -->
+                <form method="POST" id="accountSettingsForm">
+
+                    {% csrf_token %}
+
+                    <h5 class="mb-4 fw-bold">
+
+                        Change Password
+
+                    </h5>
+
+                    <!-- CURRENT PASSWORD -->
+                    <div class="mb-4">
+
+                        <label class="form-label">
+
+                            Current Password
+
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                name="current_password"
+                                class="form-control password-input"
+                                id="currentPassword"
+                                required
+                            >
+
+                            <i
+                                class="bi bi-eye-slash toggle-password"
+                                onclick="togglePassword('currentPassword', this)"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+                    <div class="mb-4">
+
+                        <label class="form-label">
+
+                            New Password
+
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                name="new_password"
+                                class="form-control password-input"
+                                id="newPassword"
+                                required
+                            >
+
+                            <i
+                                class="bi bi-eye-slash toggle-password"
+                                onclick="togglePassword('newPassword', this)"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="mb-4">
+
+                        <label class="form-label">
+
+                            Confirm New Password
+
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                name="confirm_password"
+                                class="form-control password-input"
+                                id="confirmPassword"
+                                required
+                            >
+
+                            <i
+                                class="bi bi-eye-slash toggle-password"
+                                onclick="togglePassword('confirmPassword', this)"
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button
+                        type="submit"
+                        class="btn-save-settings"
+                    >
+
+                        Save Changes
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PASSWORD TOGGLE -->
+<script>
+
+function togglePassword(inputId, icon) {
+
+    const input = document.getElementById(inputId);
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        icon.classList.remove("bi-eye-slash");
+
+        icon.classList.add("bi-eye");
+
+    }
+
+    else {
+
+        input.type = "password";
+
+        icon.classList.remove("bi-eye");
+
+        icon.classList.add("bi-eye-slash");
+
+    }
+
+}
+
+const accountSettingsForm = document.getElementById('accountSettingsForm');
+
+accountSettingsForm.addEventListener('submit', event => {
+    event.preventDefault();
+
+    Swal.fire({
+        title: 'Update password?',
+        text: 'You will use the new password on your next login.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Update',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#16325c'
+    }).then(result => {
+        if (result.isConfirmed) {
+            accountSettingsForm.submit();
+        }
+    });
+});
+
+</script>
+
+{% endblock %}

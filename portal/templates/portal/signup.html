@@ -1,0 +1,329 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/signup.css' %}">
+
+<!-- BOOTSTRAP ICONS -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+>
+
+<!-- SWEETALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="signup-section d-flex align-items-center justify-content-center">
+
+    <div class="signup-card shadow">
+
+        <!-- TITLE -->
+        <h3 class="text-center fw-bold mb-3">
+            Register Account
+        </h3>
+
+        <p class="text-center text-muted mb-4">
+            Create your JobPortal account to get started.
+        </p>
+
+        <!-- FORM -->
+        <form
+            method="POST"
+            autocomplete="off"
+            id="signupForm"
+        >
+
+            {% csrf_token %}
+
+            <!-- ROLE -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Register As
+                </label>
+
+                <select
+                    name="role"
+                    class="form-select"
+                    required
+                >
+
+                    <option value="">
+                        Select Account Type
+                    </option>
+
+                    <option
+                        value="job_seeker"
+                        {% if old_data.role == 'job_seeker' %}
+                            selected
+                        {% endif %}
+                    >
+                        Job Seeker
+                    </option>
+
+                    <option
+                        value="employer"
+                        {% if old_data.role == 'employer' %}
+                            selected
+                        {% endif %}
+                    >
+                        Employer
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- FIRST NAME -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    First Name
+                </label>
+
+                <input
+                    type="text"
+                    name="first_name"
+                    class="form-control"
+                    placeholder="Enter First Name"
+                    value="{{ old_data.first_name }}"
+                    required
+                >
+
+            </div>
+
+            <!-- LAST NAME -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Last Name
+                </label>
+
+                <input
+                    type="text"
+                    name="last_name"
+                    class="form-control"
+                    placeholder="Enter Last Name"
+                    value="{{ old_data.last_name }}"
+                    required
+                >
+
+            </div>
+
+            <!-- PHONE -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Phone Number
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        🇲🇾 +60
+                    </span>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        class="form-control"
+                        placeholder="Enter phone number"
+                        value="{{ old_data.phone }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <!-- EMAIL -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="Enter Email"
+                    value="{{ old_data.email }}"
+                    required
+                >
+
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="password-field"
+                        class="form-control"
+                        placeholder="Enter Password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password-btn"
+                        onclick="togglePassword()"
+                    >
+                        <i
+                            id="toggle-icon"
+                            class="bi bi-eye-fill"
+                        ></i>
+                    </button>
+
+                </div>
+
+                <small class="text-muted">
+                    Use at least 8 characters
+                </small>
+
+            </div>
+
+            <!-- TERMS -->
+            <div class="form-check mb-4">
+
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    required
+                >
+
+                <label class="form-check-label">
+                    I agree to terms and conditions
+                </label>
+
+            </div>
+
+            <!-- BUTTON -->
+            <button
+                type="submit"
+                class="btn btn-signup w-100"
+                id="registerBtn"
+            >
+                Register
+            </button>
+
+        </form>
+
+        <!-- LOGIN -->
+        <p class="text-center mt-3 mb-0">
+
+            Already have an account?
+
+            <a href="{% url 'login' %}">
+                Login
+            </a>
+
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+    // PASSWORD TOGGLE
+    function togglePassword() {
+
+        const passwordField = document.getElementById(
+            'password-field'
+        );
+
+        const toggleIcon = document.getElementById(
+            'toggle-icon'
+        );
+
+        if (passwordField.type === 'password') {
+
+            passwordField.type = 'text';
+
+            toggleIcon.classList.remove(
+                'bi-eye-fill'
+            );
+
+            toggleIcon.classList.add(
+                'bi-eye-slash-fill'
+            );
+
+        } else {
+
+            passwordField.type = 'password';
+
+            toggleIcon.classList.remove(
+                'bi-eye-slash-fill'
+            );
+
+            toggleIcon.classList.add(
+                'bi-eye-fill'
+            );
+        }
+    }
+
+// SWEETALERT CONFIRMATION
+const signupForm = document.getElementById(
+    'signupForm'
+);
+
+let allowSubmit = false;
+
+signupForm.addEventListener(
+    'submit',
+    function(event) {
+
+        // ALLOW REAL SUBMIT
+        if (allowSubmit) {
+            return;
+        }
+
+        // STOP FIRST SUBMIT
+        event.preventDefault();
+
+        Swal.fire({
+
+            title: 'Confirm Registration?',
+            text: 'Do you want to create this account?',
+            icon: 'question',
+
+            showCancelButton: true,
+
+            confirmButtonColor: '#1f3f79',
+            cancelButtonColor: '#6c757d',
+
+            confirmButtonText: 'Yes, Register',
+            cancelButtonText: 'Cancel'
+
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                allowSubmit = true;
+
+                signupForm.submit();
+            }
+
+        });
+
+    }
+);
+
+</script>
+
+{% endblock %}

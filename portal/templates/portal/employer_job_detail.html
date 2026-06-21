@@ -1,0 +1,196 @@
+{% extends 'portal/employer_base.html' %}
+{% load static %}
+
+{% block title %}View Job{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/employer_job_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">View Job</h1>
+        <p class="mb-0">Review the complete job posting details.</p>
+    </div>
+</section>
+
+<div class="employer-job-detail-section py-5">
+    <div class="container">
+
+        <div class="company-hero-card mb-5">
+            <div class="company-left">
+
+                {% if company.logo %}
+                <img src="{{ company.logo.url }}" class="company-hero-logo" alt="Company Logo">
+                {% else %}
+                <div class="company-hero-placeholder">
+                    {{ company.name|slice:":1" }}
+                </div>
+                {% endif %}
+
+                <div class="company-info">
+                    <h2 class="company-name"><a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a></h2>
+                    <p class="company-industry">{{ company.industry }}</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="job-detail-card">
+
+            <div class="job-detail-header">
+
+                <div class="job-detail-title-area">
+                    <a href="{% url 'manage_jobs' %}" class="top-action-btn">
+                        <i class="bi bi-arrow-left-circle-fill"></i>
+                        Back
+                    </a>
+
+                    <h2>{{ job.title }}</h2>
+
+                    <p><a href="{% url 'public_company_detail' company.id %}" class="company-profile-link">{{ company.name }}</a></p>
+                </div>
+
+                <div class="top-actions">
+
+                    <a href="{% url 'edit_job' job.id %}" class="top-action-btn">
+                        <i class="bi bi-pencil-fill"></i>
+                        Edit Job
+                    </a>
+
+                    <form method="POST" action="{% url 'delete_job' job.id %}" class="detail-delete-form js-confirm-delete">
+                        {% csrf_token %}
+                        <button type="submit" class="top-action-btn delete-action">
+                            <i class="bi bi-trash-fill"></i>
+                            Delete
+                        </button>
+                    </form>
+
+                    <span class="status-text detail-status status-{{ job.display_status }}">{{ job.display_status|title }}</span>
+
+                </div>
+
+            </div>
+
+            <div class="job-meta-wrapper">
+
+                {% if job.location %}
+                <div class="job-meta-item">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span>{{ job.location }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.job_type %}
+                <div class="job-meta-item">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>{{ job.job_type }}</span>
+                </div>
+                {% endif %}
+
+                {% if job.salary %}
+                <div class="job-meta-item">
+                    <i class="bi bi-cash-stack"></i>
+                    <span>{{ job.salary }}</span>
+                </div>
+                {% endif %}
+
+                <div class="job-meta-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>{{ applicant_count }} Applicants</span>
+                </div>
+
+                <div class="job-meta-item">
+                    <i class="bi bi-calendar-event-fill"></i>
+                    <span>{{ job.created_at|date:"d M Y" }}</span>
+                </div>
+
+            </div>
+
+            <div class="detail-section">
+                <h4>Job Description</h4>
+                <p>{{ job.description }}</p>
+            </div>
+
+            <div class="detail-section">
+                <h4>Skills Required</h4>
+
+                {% if job.skills_required %}
+                <p>{{ job.skills_required }}</p>
+                {% else %}
+                <p class="empty-text">No skills requirement provided.</p>
+                {% endif %}
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <div class="requirement-box">
+                        <div class="requirement-icon">
+                            <i class="bi bi-bar-chart-fill"></i>
+                        </div>
+
+                        <h5>Experience Required</h5>
+
+                        <p>
+                            {% if job.experience_required %}
+                                {{ job.experience_required }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="requirement-box">
+                        <div class="requirement-icon">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+
+                        <h5>Education Required</h5>
+
+                        <p>
+                            {% if job.education_required %}
+                                {{ job.education_required }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const deleteForm = document.querySelector('.js-confirm-delete');
+
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', event => {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Delete job?',
+                text: 'This job posting will be permanently deleted.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#dc2626'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    deleteForm.submit();
+                }
+            });
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'portal/jobseeker_base.html' %}
+{% load static %}
+
+{% block title %}Messages{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/chat_list.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="jobs-header">
+    <div class="container py-5 text-white">
+        <h1 class="fw-bold">Messages</h1>
+        <p class="mb-0">View your conversations with employers.</p>
+    </div>
+</section>
+
+<div class="chat-list-section py-5">
+    <div class="container">
+        {% if chat_list %}
+        <div class="chat-list-wrapper">
+            {% for chat in chat_list %}
+            <div class="chat-list-card">
+                <a href="{% url 'open_chat' chat.job.id chat.other_user.id %}"
+                   target="_blank"
+                   rel="noopener"
+                   class="chat-card-main text-decoration-none js-open-chat">
+                    <div class="chat-user-info">
+                        {% if chat.job.company.logo %}
+                        <img src="{{ chat.job.company.logo.url }}" class="chat-avatar-img" alt="{{ chat.job.company.name }}">
+                        {% elif chat.other_user.profile_image %}
+                        <img src="{{ chat.other_user.profile_image.url }}" class="chat-avatar-img" alt="{{ chat.other_user.full_name }}">
+                        {% else %}
+                        <div class="chat-avatar">{{ chat.other_user.first_name|slice:":1" }}</div>
+                        {% endif %}
+                        <div>
+                            <h5>
+                                {% if chat.other_user.company %}
+                                    {{ chat.other_user.company.name }}
+                                {% else %}
+                                    {{ chat.other_user.full_name }}
+                                {% endif %}
+                            </h5>
+                            <p>{{ chat.job.title }}</p>
+                            <span class="last-message">{{ chat.last_message|truncatechars:50 }}</span>
+                        </div>
+                    </div>
+                    <div class="chat-meta">
+                        <small>{{ chat.timestamp|date:"d M" }}</small>
+                        {% if chat.unread_count > 0 %}
+                        <span class="unread-badge">{{ chat.unread_count }}</span>
+                        {% endif %}
+                    </div>
+                </a>
+                <form method="POST" action="{% url 'delete_chat' chat.job.id chat.other_user.id %}" class="chat-delete-form js-delete-chat">
+                    {% csrf_token %}
+                    <button type="submit" class="chat-delete-btn" title="Delete conversation">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-chat-list">
+            <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" class="empty-state-illustration" alt="No conversations">
+            <h4>No conversations yet</h4>
+            <p>Your chats with employers will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    window.addEventListener('pageshow', event => {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+
+    document.querySelectorAll('.js-open-chat').forEach(link => {
+        link.addEventListener('click', () => {
+            const badge = link.querySelector('.unread-badge');
+            if (badge) {
+                badge.remove();
+            }
+        });
+    });
+
+    document.querySelectorAll('.js-delete-chat').forEach(form => {
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Delete conversation?',
+                text: 'This chat history will be removed.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#dc2626'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

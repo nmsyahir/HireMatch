@@ -1,0 +1,247 @@
+{% extends 'portal/public_base.html' %}
+{% load static %}
+
+{% block title %}Search Jobs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/jobs.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HEADER -->
+<section class="jobs-header public-page-header">
+
+    <div class="container text-white">
+
+        <h1 class="fw-bold">
+            Search Jobs
+        </h1>
+
+        <p>
+            Find opportunities from the jobs.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- SHORTCUT -->
+<div class="shortcut-section">
+
+    <div class="container">
+
+        <div class="shortcut-wrapper">
+
+            <!-- RESUME GENERATOR -->
+            <a
+                href="{% if request.session.user_id %}{% url 'resume_generator' %}{% else %}{% url 'login' %}{% endif %}"
+                class="shortcut-card"
+            >
+                Resume Generator
+            </a>
+
+            <!-- UPLOAD RESUME -->
+            <a
+                href="{% if request.session.user_id %}{% url 'upload_resume' %}{% else %}{% url 'login' %}{% endif %}"
+                class="shortcut-card"
+            >
+                Upload Resume
+            </a>
+
+            <!-- FAQ -->
+            <a
+                href="{% url 'faq' %}"
+                class="shortcut-card"
+            >
+                FAQ
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SEARCH -->
+<div class="container">
+
+    <div class="search-box shadow-sm">
+
+        <form
+            method="GET"
+            id="searchForm"
+            class="row g-3 align-items-center"
+        >
+
+            <div class="col-lg-6">
+                <div class="job-search-field">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                <input
+                    type="text"
+                    name="q"
+                    id="jobSearch"
+                    class="form-control"
+                    placeholder="Search jobs, companies, skills, or locations"
+                    value="{{ query }}"
+                    autocomplete="off"
+                >
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <select name="job_type" class="form-select">
+                    <option value="" {% if not job_type %}selected{% endif %}>All Job Types</option>
+                    <option value="Full-Time" {% if job_type == 'Full-Time' %}selected{% endif %}>Full-Time</option>
+                    <option value="Part-Time" {% if job_type == 'Part-Time' %}selected{% endif %}>Part-Time</option>
+                    <option value="Internship" {% if job_type == 'Internship' %}selected{% endif %}>Internship</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <input type="number" name="salary_min" class="form-control" placeholder="Min salary" value="{{ salary_min }}" step="100">
+            </div>
+
+            <div class="col-lg-2 col-md-4">
+                <input type="number" name="salary_max" class="form-control" placeholder="Max salary" value="{{ salary_max }}" step="100">
+            </div>
+
+            <div class="col-12 d-none">
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- JOB LIST -->
+<div class="container mt-4">
+
+    <p class="text-muted">
+        Showing {{ jobs|length }} job(s)
+    </p>
+
+    <div class="row">
+
+        {% for job in jobs %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="job-card">
+
+                <div class="job-card-header">
+                    <a href="{% url 'public_company_detail' job.company.id %}" class="job-logo-link" aria-label="View {{ job.company.name }} profile">
+                        {% if job.company.logo %}
+                            <img src="{{ job.company.logo.url }}" class="job-company-logo" alt="{{ job.company.name }} logo">
+                        {% else %}
+                            <span class="job-company-placeholder">{{ job.company.name|slice:":1" }}</span>
+                        {% endif %}
+                    </a>
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ job.title }}</h5>
+                        <p class="text-muted mb-1">
+                            <a href="{% url 'public_company_detail' job.company.id %}" class="text-decoration-none">
+                                {{ job.company.name }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+
+                <p class="small">
+
+                    📍 {{ job.location }} |
+                    🕒 {{ job.job_type }}
+
+                </p>
+
+                <p>
+                    {{ job.description|truncatewords:15 }}
+                </p>
+
+                <a
+                    href="{% if request.session.user_id %}{% url 'job_detail' job.id %}{% else %}{% url 'login' %}{% endif %}"
+                    class="btn btn-outline-primary btn-sm"
+                >
+                    View Details
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-job-state text-center py-5">
+
+            <img
+                src="{% static 'portal/images/undraw_empty_4zx0.svg' %}"
+                class="empty-job-img mb-4"
+                alt="No jobs found"
+            >
+
+            <h4 class="fw-bold">No jobs found</h4>
+
+            <p class="text-muted mb-4">
+                Try using different keywords or locations.
+            </p>
+
+            <a href="{% url 'public_jobs' %}" class="btn btn-search">
+                Reset Search
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- AUTO SEARCH -->
+<script>
+
+    let timeout = null;
+
+    const form = document.getElementById('searchForm');
+
+    const lastFocusedSearch = sessionStorage.getItem('publicLastFocusedSearch');
+
+    if (lastFocusedSearch) {
+        const focusedInput = document.getElementById(lastFocusedSearch);
+
+        if (focusedInput) {
+            focusedInput.focus();
+            focusedInput.setSelectionRange(
+                focusedInput.value.length,
+                focusedInput.value.length
+            );
+        }
+
+        sessionStorage.removeItem('publicLastFocusedSearch');
+    }
+
+    function autoSearch() {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+            if (document.activeElement && document.activeElement.id) {
+                sessionStorage.setItem(
+                    'publicLastFocusedSearch',
+                    document.activeElement.id
+                );
+            }
+
+            form.submit();
+        }, 400);
+    }
+
+    form.querySelectorAll('input, select').forEach(control => {
+        const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
+        control.addEventListener(eventName, autoSearch);
+    });
+
+</script>
+
+{% endblock %}

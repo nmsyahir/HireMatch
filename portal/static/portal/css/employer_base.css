@@ -1,0 +1,249 @@
+/* =========================
+   EMPLOYER NAVBAR
+========================= */
+
+/* same navbar feel as public/jobseeker */
+.navbar {
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* =========================
+   NAV LINKS
+========================= */
+.nav-link {
+    color: #16325c !important;
+    font-weight: 600;
+    margin: 0 8px;
+    position: relative;
+    transition: 0.3s;
+}
+
+/* hover */
+.nav-link:hover {
+    color: #f4b400 !important;
+}
+
+/* underline */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #f4b400;
+    left: 0;
+    bottom: -5px;
+    transition: 0.3s;
+}
+
+/* hover underline */
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* active nav */
+.nav-link.active-nav {
+    color: #f4b400 !important;
+    font-weight: 700;
+}
+
+.nav-link.active-nav::after {
+    width: 100%;
+    background: #f4b400;
+}
+
+/* =========================
+   IMPORTANT LINK
+========================= */
+.important-link {
+    font-weight: 700;
+    background: linear-gradient(
+        120deg,
+        #16325c 0%,
+        #16325c 40%,
+        #f4b400 50%,
+        #16325c 60%,
+        #16325c 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShimmer 3s linear infinite;
+}
+
+/* animation */
+@keyframes textShimmer {
+    0% {
+        background-position: 200% center;
+    }
+
+    100% {
+        background-position: -200% center;
+    }
+}
+
+/* =========================
+   USER MENU BUTTON
+========================= */
+.user-menu-btn {
+    background: #fff;
+    border: 1px solid #dbe3ec;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #16325c;
+    transition: 0.2s;
+}
+
+.user-menu-btn:hover {
+    background: #f4b400;
+    color: #fff;
+    border-color: #f4b400;
+}
+
+/* =========================
+   DROPDOWN
+========================= */
+.user-dropdown {
+    border-radius: 12px;
+    padding: 10px;
+    min-width: 200px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+/* dropdown items */
+.user-dropdown .dropdown-item {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 500;
+    color: #16325c;
+}
+
+/* hover */
+.user-dropdown .dropdown-item:hover {
+    background: #f4f7fb;
+}
+
+/* =========================
+   HEADER
+========================= */
+.jobs-header {
+    background-color: #1f3f79;
+    color: white;
+}
+
+/* =========================
+   DROPDOWN ANIMATION
+========================= */
+.user-dropdown {
+    animation: dropdownFade 0.2s ease;
+}
+
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   LOGOUT ITEM
+========================= */
+.logout-item {
+    color: #dc3545 !important;
+    font-weight: 600;
+}
+
+.logout-item:hover {
+    background: #fdecec !important;
+    color: #dc3545 !important;
+}
+
+/* =========================
+   CHAT ICON
+========================= */
+.chat-bell {
+    position: relative;
+    color: #1f3f79;
+    font-size: 1.7rem;
+    text-decoration: none;
+    transition: 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-bell:hover {
+    color: #f4b400;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   CHAT BADGE
+========================= */
+.chat-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #dc3545;
+    color: #ffffff;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    border: 2px solid #ffffff;
+    padding: 0 5px;
+    animation: pulseBadge 1.5s infinite;
+}
+
+/* BADGE ANIMATION */
+@keyframes pulseBadge {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+/* Standard HireMatch hero header */
+.jobs-header,
+.reco-header,
+.page-header-section {
+    background: linear-gradient(135deg, #16325c 0%, #1f4e8c 100%) !important;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.jobs-header::before,
+.reco-header::before,
+.page-header-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 32%), radial-gradient(circle at 86% 20%, rgba(244,180,0,0.18), transparent 30%);
+    pointer-events: none;
+}
+
+.jobs-header .container,
+.reco-header .container,
+.page-header-section .container {
+    position: relative;
+    z-index: 1;
+}
