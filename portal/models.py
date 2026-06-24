@@ -289,6 +289,18 @@ class Job(models.Model):
 
         return self.status
 
+    @property
+    def salary_display(self):
+        if self.salary_min is not None and self.salary_max is not None:
+            if self.salary_min == self.salary_max:
+                return f"RM{self.salary_min:,}"
+            return f"RM{self.salary_min:,} - RM{self.salary_max:,}"
+        if self.salary_min is not None:
+            return f"From RM{self.salary_min:,}"
+        if self.salary_max is not None:
+            return f"Up to RM{self.salary_max:,}"
+        return self.salary
+
 
 # =========================
 # RESUME

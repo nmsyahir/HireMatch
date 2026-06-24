@@ -50,10 +50,10 @@
                         Swal.fire({
 
                             icon:
-                            '{% if message.tags == "success" %}success{% else %}error{% endif %}',
+                            '{% if "success" in message.tags %}success{% else %}error{% endif %}',
 
                             title:
-                            '{% if message.tags == "success" %}Success{% else %}Error{% endif %}',
+                            '{% if "success" in message.tags %}Success{% else %}Error{% endif %}',
 
                             text: '{{ message }}',
 

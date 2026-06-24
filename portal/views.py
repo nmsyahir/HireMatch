@@ -1,9 +1,11 @@
+import logging
 import re
 import secrets
 import PyPDF2
 from datetime import timedelta
 from functools import wraps
 from pathlib import Path
+from xml.sax.saxutils import escape
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -16,12 +18,16 @@ from django.conf import settings
 from django.http import FileResponse, HttpResponse
 from django.http import JsonResponse
 from django.db import transaction
-from django.db.models import Count, F, Q
+from django.db.models import Case, Count, F, IntegerField, Q, Value, When
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -29,6 +35,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .models import Job, Company, Resume, Recommendation, UserProfile, Application, SavedJob, ChatMessage, Notification
 from .forms import JobForm
 from .validators import validate_image_upload, validate_resume_upload
+
+
+logger = logging.getLogger(__name__)
 
 
 # =========================
@@ -348,7 +357,7 @@ def open_jobs_queryset():
     )
 
 
-def filter_jobs_by_salary(jobs, requested_min, requested_max):
+def filter_jobs_by_salary(jobs, requested_min, requested_max, allow_legacy_salary=True):
     minimum = int(requested_min) if requested_min.isdigit() else None
     maximum = int(requested_max) if requested_max.isdigit() else None
     if minimum is None and maximum is None:
@@ -359,7 +368,7 @@ def filter_jobs_by_salary(jobs, requested_min, requested_max):
         job_minimum = job.salary_min
         job_maximum = job.salary_max
 
-        if job_minimum is None and job_maximum is None:
+        if allow_legacy_salary and job_minimum is None and job_maximum is None:
             salary_numbers = [
                 int(value.replace(',', ''))
                 for value in re.findall(r'\d[\d,]*', job.salary or '')
@@ -526,6 +535,13 @@ def dashboard(request):
         user=user
     ).count()
 
+    recent_applications = Application.objects.filter(
+        user=user
+    ).select_related(
+        'job',
+        'job__company'
+    ).order_by('-applied_at')[:5]
+
     return render(
         request,
         'portal/dashboard.html',
@@ -537,6 +553,8 @@ def dashboard(request):
             'total_saved_jobs': total_saved_jobs,
 
             'total_applications': total_applications,
+
+            'recent_applications': recent_applications,
 
             # SWEETALERT
             'login_success': login_success,
@@ -622,11 +640,17 @@ def user_jobs(request):
     job_type = request.GET.get('job_type', '').strip()
     salary_min = request.GET.get('salary_min', '').strip()
     salary_max = request.GET.get('salary_max', '').strip()
+    sort = request.GET.get('sort', 'newest').strip()
+    valid_sorts = {'newest', 'salary_low', 'salary_high', 'title', 'relevance'}
+    if sort not in valid_sorts or (sort == 'relevance' and not query):
+        sort = 'newest'
+
+    salary_error = ''
+    if salary_min.isdigit() and salary_max.isdigit() and int(salary_min) > int(salary_max):
+        salary_error = 'Minimum Salary cannot be greater than Maximum Salary.'
 
     # JOBS
-    jobs = open_jobs_queryset().order_by(
-        '-id'
-    )
+    jobs = open_jobs_queryset()
 
     # FILTER KEYWORDS
     if query:
@@ -648,7 +672,35 @@ def user_jobs(request):
             job_type=job_type
         )
 
-    jobs = filter_jobs_by_salary(jobs, salary_min, salary_max)
+    if not salary_error:
+        jobs = filter_jobs_by_salary(
+            jobs,
+            salary_min,
+            salary_max,
+            allow_legacy_salary=False,
+        )
+
+    if sort == 'salary_low':
+        jobs = jobs.order_by(F('salary_min').asc(nulls_last=True), 'title')
+    elif sort == 'salary_high':
+        jobs = jobs.order_by(F('salary_max').desc(nulls_last=True), 'title')
+    elif sort == 'title':
+        jobs = jobs.order_by('title', '-id')
+    elif sort == 'relevance' and query:
+        jobs = jobs.annotate(
+            search_relevance=Case(
+                When(title__iexact=query, then=Value(0)),
+                When(title__icontains=query, then=Value(1)),
+                When(company__name__icontains=query, then=Value(2)),
+                When(skills_required__icontains=query, then=Value(3)),
+                When(location__icontains=query, then=Value(4)),
+                When(description__icontains=query, then=Value(5)),
+                default=Value(6),
+                output_field=IntegerField(),
+            )
+        ).order_by('search_relevance', '-id')
+    else:
+        jobs = jobs.order_by('-id')
 
     # SAVED JOB IDS
     saved_job_ids = SavedJob.objects.filter(
@@ -667,6 +719,8 @@ def user_jobs(request):
             'job_type': job_type,
             'salary_min': salary_min,
             'salary_max': salary_max,
+            'salary_error': salary_error,
+            'sort': sort,
             'saved_job_ids': saved_job_ids
         }
     )
@@ -953,7 +1007,10 @@ def signup_view(request):
 
         try:
             sent, otp_message = send_otp(user, 'Account Verification OTP', 'Your HireMatch verification OTP is {otp}. It expires in 5 minutes.')
-            messages.success(request, otp_message)
+            if sent:
+                messages.success(request, otp_message)
+            else:
+                messages.warning(request, otp_message)
         except Exception:
             messages.error(request, 'We could not send the OTP. Please use Resend OTP to try again.')
 
@@ -1097,10 +1154,10 @@ def login_view(request):
                     messages.error(request, 'We could not send the OTP. Please try again.')
                     return redirect('login')
 
-                messages.error(
-                    request,
-                    otp_message
-                )
+                if sent:
+                    messages.success(request, otp_message)
+                else:
+                    messages.warning(request, otp_message)
 
                 return redirect('verify_otp')
 
@@ -1287,28 +1344,29 @@ def verify_otp(request):
 
 @require_POST
 def resend_otp(request):
-    user_id = request.session.get('verify_user')
-    purpose = request.session.get('otp_purpose')
-    user = UserProfile.objects.filter(id=user_id).first() if user_id else None
-
-    if not user or purpose not in {'signup', 'login', 'reset_password'}:
-        messages.error(request, 'OTP session expired. Please start again.')
-        return redirect('login')
-
-    otp_templates = {
-        'signup': ('Account Verification OTP', 'Your HireMatch verification OTP is {otp}. It expires in 5 minutes.'),
-        'login': ('HireMatch Login OTP', 'Your HireMatch login OTP is {otp}. It expires in 5 minutes.'),
-        'reset_password': ('Password Reset OTP', 'Your HireMatch password reset OTP is {otp}. It expires in 5 minutes.'),
-    }
-    subject, body = otp_templates[purpose]
-
     try:
+        user_id = request.session.get('verify_user')
+        purpose = request.session.get('otp_purpose')
+        user = UserProfile.objects.filter(id=user_id).first() if user_id else None
+
+        if not user or purpose not in {'signup', 'login', 'reset_password'}:
+            messages.error(request, 'OTP session expired. Please start again.')
+            return redirect('login')
+
+        otp_templates = {
+            'signup': ('Account Verification OTP', 'Your HireMatch verification OTP is {otp}. It expires in 5 minutes.'),
+            'login': ('HireMatch Login OTP', 'Your HireMatch login OTP is {otp}. It expires in 5 minutes.'),
+            'reset_password': ('Password Reset OTP', 'Your HireMatch password reset OTP is {otp}. It expires in 5 minutes.'),
+        }
+        subject, body = otp_templates[purpose]
+
         sent, otp_message = send_otp(user, subject, body)
         if sent:
             messages.success(request, otp_message)
         else:
             messages.warning(request, otp_message)
     except Exception:
+        logger.exception('Unable to resend OTP.')
         messages.error(request, 'We could not send the OTP. Please check the email configuration and try again.')
 
     return redirect('verify_otp')
@@ -1484,47 +1542,191 @@ def generate_resume(request):
         ).first()
 
     if request.method == 'POST':
-
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
+        professional_title = request.POST.get('professional_title', '').strip()
         email = request.POST.get('email', '').strip()
         phone = request.POST.get('phone', '').strip()
-        skills = request.POST.get('skills', '').strip()
-        education = request.POST.get('education', '').strip()
-        experience_years = request.POST.get('experience_years', '').strip()
-        experience = request.POST.get('experience', '').strip()
+        location = request.POST.get('location', '').strip()
+        linkedin = request.POST.get('linkedin', '').strip()
+        github = request.POST.get('github', '').strip()
+        summary = request.POST.get('summary', '').strip()
+        technical_skills = request.POST.get('technical_skills', '').strip()
+        soft_skills = request.POST.get('soft_skills', '').strip()
+        certifications = request.POST.get('certifications', '').strip()
+        languages = request.POST.get('languages', '').strip()
+
+        def repeated_rows(field_names):
+            columns = [request.POST.getlist(field_name) for field_name in field_names]
+            rows = []
+            for values in zip(*columns):
+                cleaned = [value.strip() for value in values]
+                if any(cleaned):
+                    rows.append(dict(zip(field_names, cleaned)))
+            return rows
+
+        work_experiences = repeated_rows([
+            'work_job_title', 'work_company', 'work_start', 'work_end',
+            'work_responsibilities'
+        ])
+        education_entries = repeated_rows([
+            'education_qualification', 'education_institution',
+            'education_year', 'education_cgpa'
+        ])
+        projects = repeated_rows([
+            'project_name', 'project_technologies', 'project_description'
+        ])
 
         full_name = f"{first_name} {last_name}".strip()
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="resume.pdf"'
 
-        doc = SimpleDocTemplate(response)
+        doc = SimpleDocTemplate(
+            response,
+            pagesize=A4,
+            rightMargin=18 * mm,
+            leftMargin=18 * mm,
+            topMargin=16 * mm,
+            bottomMargin=16 * mm,
+            title=f'{full_name} Resume',
+            author=full_name,
+        )
         styles = getSampleStyleSheet()
 
+        name_style = ParagraphStyle(
+            'ResumeName',
+            parent=styles['Title'],
+            fontName='Helvetica-Bold',
+            fontSize=22,
+            leading=26,
+            textColor=colors.HexColor('#16325c'),
+            alignment=TA_CENTER,
+            spaceAfter=3,
+        )
+        title_style = ParagraphStyle(
+            'ProfessionalTitle',
+            parent=styles['Normal'],
+            fontSize=10.5,
+            leading=14,
+            textColor=colors.HexColor('#52647c'),
+            alignment=TA_CENTER,
+            spaceAfter=7,
+        )
+        contact_style = ParagraphStyle(
+            'Contact',
+            parent=styles['Normal'],
+            fontSize=8.5,
+            leading=12,
+            textColor=colors.HexColor('#52647c'),
+            alignment=TA_CENTER,
+        )
+        section_style = ParagraphStyle(
+            'Section',
+            parent=styles['Heading2'],
+            fontName='Helvetica-Bold',
+            fontSize=11,
+            leading=14,
+            textColor=colors.HexColor('#16325c'),
+            spaceBefore=9,
+            spaceAfter=5,
+            borderWidth=0,
+            borderPadding=0,
+        )
+        body_style = ParagraphStyle(
+            'Body',
+            parent=styles['Normal'],
+            fontSize=9.2,
+            leading=13.2,
+            textColor=colors.HexColor('#25364d'),
+            spaceAfter=4,
+        )
+        meta_style = ParagraphStyle(
+            'Meta',
+            parent=body_style,
+            fontSize=8.5,
+            textColor=colors.HexColor('#64748b'),
+        )
+
+        def safe(value):
+            return escape(value or '').replace('\n', '<br/>')
+
+        def add_section(story, title):
+            story.append(Paragraph(safe(title).upper(), section_style))
+            line = Table([['']], colWidths=[174 * mm], rowHeights=[0.6 * mm])
+            line.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#1f4e8c'))]))
+            story.append(line)
+            story.append(Spacer(1, 5))
+
+        contact_items = [item for item in [email, phone, location, linkedin, github] if item]
         content = [
-            Paragraph(f"<b>{full_name}</b>", styles['Title']),
-            Spacer(1, 12),
-
-            Paragraph(f"Email: {email}", styles['Normal']),
-            Paragraph(f"Phone: {phone}", styles['Normal']),
-            Spacer(1, 12),
-
-            Paragraph("<b>Skills</b>", styles['Heading2']),
-            Paragraph(skills or "-", styles['Normal']),
-            Spacer(1, 12),
-
-            Paragraph("<b>Education</b>", styles['Heading2']),
-            Paragraph(education or "-", styles['Normal']),
-            Spacer(1, 12),
-
-            Paragraph("<b>Experience Years</b>", styles['Heading2']),
-            Paragraph(experience_years or "-", styles['Normal']),
-            Spacer(1, 12),
-
-            Paragraph("<b>Experience</b>", styles['Heading2']),
-            Paragraph(experience or "-", styles['Normal']),
+            Paragraph(safe(full_name or 'Your Name'), name_style),
+            Paragraph(safe(professional_title), title_style) if professional_title else Spacer(1, 1),
+            Paragraph(' &nbsp; | &nbsp; '.join(safe(item) for item in contact_items), contact_style),
+            Spacer(1, 7),
         ]
+
+        if summary:
+            add_section(content, 'Professional Summary')
+            content.append(Paragraph(safe(summary), body_style))
+
+        if technical_skills or soft_skills:
+            add_section(content, 'Skills')
+            if technical_skills:
+                content.append(Paragraph(f'<b>Technical:</b> {safe(technical_skills)}', body_style))
+            if soft_skills:
+                content.append(Paragraph(f'<b>Soft Skills:</b> {safe(soft_skills)}', body_style))
+
+        if work_experiences:
+            add_section(content, 'Work Experience')
+            for item in work_experiences:
+                heading = safe(item['work_job_title'])
+                if item['work_company']:
+                    heading += f" | {safe(item['work_company'])}"
+                period = ' - '.join(filter(None, [safe(item['work_start']), safe(item['work_end'])]))
+                block = [Paragraph(f'<b>{heading}</b>', body_style)]
+                if period:
+                    block.append(Paragraph(period, meta_style))
+                if item['work_responsibilities']:
+                    block.append(Paragraph(safe(item['work_responsibilities']), body_style))
+                block.append(Spacer(1, 4))
+                content.append(KeepTogether(block))
+
+        if education_entries:
+            add_section(content, 'Education')
+            for item in education_entries:
+                heading = safe(item['education_qualification'])
+                if item['education_institution']:
+                    heading += f" | {safe(item['education_institution'])}"
+                details = ' | '.join(filter(None, [
+                    safe(item['education_year']),
+                    f"CGPA: {safe(item['education_cgpa'])}" if item['education_cgpa'] else ''
+                ]))
+                block = [Paragraph(f'<b>{heading}</b>', body_style)]
+                if details:
+                    block.append(Paragraph(details, meta_style))
+                block.append(Spacer(1, 4))
+                content.append(KeepTogether(block))
+
+        if projects:
+            add_section(content, 'Projects')
+            for item in projects:
+                heading = safe(item['project_name'])
+                if item['project_technologies']:
+                    heading += f" | {safe(item['project_technologies'])}"
+                block = [Paragraph(f'<b>{heading}</b>', body_style)]
+                if item['project_description']:
+                    block.append(Paragraph(safe(item['project_description']), body_style))
+                block.append(Spacer(1, 4))
+                content.append(KeepTogether(block))
+
+        if certifications:
+            add_section(content, 'Certifications')
+            content.append(Paragraph(safe(certifications), body_style))
+
+        if languages:
+            add_section(content, 'Languages')
+            content.append(Paragraph(safe(languages), body_style))
 
         doc.build(content)
         return response

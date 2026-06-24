@@ -8,114 +8,246 @@
 {% endblock %}
 
 {% block content %}
-
-<!-- 🔵 HEADER STRIP -->
 <section class="jobs-header public-page-header">
     <div class="container text-white">
-        <h1 class="fw-bold">Resume Generator</h1>
-        <p>Generate your resume easily in just a few steps.</p>
+        <h1>Resume Generator</h1>
+        <p>Create a structured, ATS-friendly resume for your job search.</p>
     </div>
 </section>
 
-<!-- ⚪ FORM SECTION -->
-<div class="container py-5 form-container">
-
-    <!-- 🔥 WRAPPER (IMPORTANT) -->
-    <div class="resume-wrapper">
-
-        <!-- 🔥 HELP BUTTON (TOP RIGHT OF FORM) -->
-        <button class="btn-help" data-bs-toggle="modal" data-bs-target="#guideModal">
-            ?
-        </button>
-
-        <div class="resume-card">
-
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>First Name</label>
-                        <input type="text" name="first_name" class="form-control"
-                               value="{{ user.first_name }}"
-                               placeholder="e.g. Ahmad" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Last Name</label>
-                        <input type="text" name="last_name" class="form-control"
-                               value="{{ user.last_name }}"
-                               placeholder="e.g. Ali" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control"
-                           value="{{ user.email }}"
-                           placeholder="e.g. ahmad@gmail.com" required>
-                </div>
-
-                <div class="mb-3">
-                    <label>Phone</label>
-                    <input type="text" name="phone" class="form-control"
-                           value="{{ user.phone }}"
-                           placeholder="e.g. +60123456789">
-                </div>
-
-                <div class="mb-3">
-                    <label>Experience Years</label>
-                    <input type="text" name="experience_years" class="form-control"
-                           placeholder="e.g. 2 years">
-                </div>
-
-                <div class="mb-3">
-                    <label>Skills</label>
-                    <textarea name="skills" class="form-control" rows="3"
-                        placeholder="e.g. Python, Django, Machine Learning, SQL"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label>Education</label>
-                    <textarea name="education" class="form-control" rows="3"
-                        placeholder="e.g. Bachelor of Computer Science, Universiti Malaya"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label>Experience</label>
-                    <textarea name="experience" class="form-control" rows="3"
-                        placeholder="e.g. Internship at ABC Tech, Web Developer (2 years)"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-resume w-100">
-                    Generate Resume (PDF)
-                </button>
-
-            </form>
-
+<main class="resume-generator-section">
+    <div class="container form-container">
+        <div class="resume-form-heading">
+            <div>
+                <span>Professional resume</span>
+                <h2>Build Your Resume</h2>
+                <p>Complete the relevant sections and generate a clean one-column PDF.</p>
+            </div>
+            <button type="button" class="resume-info-btn" data-bs-toggle="modal" data-bs-target="#guideModal" title="Resume tips" aria-label="Open resume tips">
+                <i class="bi bi-info-circle"></i>
+            </button>
         </div>
 
-    </div>
+        <form method="POST" id="resumeGeneratorForm" class="resume-card">
+            {% csrf_token %}
 
+            <section class="resume-form-section">
+                <div class="section-heading">
+                    <span>01</span>
+                    <div><h3>Personal Details</h3><p>Your primary contact and professional information.</p></div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="firstName">First Name</label>
+                        <input id="firstName" type="text" name="first_name" class="form-control" value="{{ user.first_name }}" placeholder="e.g. Ahmad" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName">Last Name</label>
+                        <input id="lastName" type="text" name="last_name" class="form-control" value="{{ user.last_name }}" placeholder="e.g. Ali" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="professionalTitle">Professional Title</label>
+                        <input id="professionalTitle" type="text" name="professional_title" class="form-control" placeholder="e.g. Junior Software Developer">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" name="email" class="form-control" value="{{ user.email }}" placeholder="e.g. ahmad@example.com" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone">Phone</label>
+                        <input id="phone" type="text" name="phone" class="form-control" value="{{ user.phone }}" placeholder="e.g. +60123456789">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="location">Location</label>
+                        <input id="location" type="text" name="location" class="form-control" value="{{ user.location }}" placeholder="e.g. Shah Alam, Selangor">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="linkedin">LinkedIn <span class="optional-label">Optional</span></label>
+                        <input id="linkedin" type="url" name="linkedin" class="form-control" value="{{ user.linkedin|default:'' }}" placeholder="https://www.linkedin.com/in/your-name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="github">GitHub <span class="optional-label">Optional</span></label>
+                        <input id="github" type="url" name="github" class="form-control" value="{{ user.github|default:'' }}" placeholder="https://github.com/your-username">
+                    </div>
+                </div>
+            </section>
+
+            <section class="resume-form-section">
+                <div class="section-heading"><span>02</span><div><h3>Professional Summary</h3><p>A concise introduction to your experience and career direction.</p></div></div>
+                <label for="summary">Summary</label>
+                <textarea id="summary" name="summary" class="form-control" rows="4" placeholder="Describe your background, strengths, and career goals in 2-4 sentences."></textarea>
+            </section>
+
+            <section class="resume-form-section">
+                <div class="section-heading"><span>03</span><div><h3>Skills</h3><p>Separate technical abilities from interpersonal strengths.</p></div></div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="technicalSkills">Technical Skills</label>
+                        <textarea id="technicalSkills" name="technical_skills" class="form-control" rows="3" placeholder="Python, Django, SQL, HTML, CSS"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="softSkills">Soft Skills</label>
+                        <textarea id="softSkills" name="soft_skills" class="form-control" rows="3" placeholder="Communication, teamwork, problem-solving"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="resume-form-section repeatable-section" data-section="work">
+                <div class="section-heading-row">
+                    <div class="section-heading"><span>04</span><div><h3>Work Experience</h3><p>Add employment, internship, or relevant practical experience.</p></div></div>
+                    <button type="button" class="btn-add-entry" data-add-entry="work"><i class="bi bi-plus-lg"></i> Add Experience</button>
+                </div>
+                <div class="repeatable-list" data-entry-list="work">
+                    <div class="repeatable-entry" data-entry>
+                        <div class="entry-toolbar"><strong>Experience 1</strong><button type="button" class="btn-remove-entry" data-remove-entry aria-label="Remove experience"><i class="bi bi-trash"></i> Remove</button></div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label>Job Title</label><input type="text" name="work_job_title" class="form-control" placeholder="e.g. Software Developer Intern"></div>
+                            <div class="col-md-6"><label>Company</label><input type="text" name="work_company" class="form-control" placeholder="e.g. ABC Technology Sdn. Bhd."></div>
+                            <div class="col-md-6"><label>Start Date</label><input type="text" name="work_start" class="form-control" placeholder="e.g. Jan 2025"></div>
+                            <div class="col-md-6"><label>End Date</label><input type="text" name="work_end" class="form-control" placeholder="e.g. Jun 2025 or Present"></div>
+                            <div class="col-12"><label>Responsibilities or Achievements</label><textarea name="work_responsibilities" class="form-control" rows="3" placeholder="Describe your contributions using clear action statements."></textarea></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="resume-form-section repeatable-section" data-section="education">
+                <div class="section-heading-row">
+                    <div class="section-heading"><span>05</span><div><h3>Education</h3><p>List your academic qualifications from the most recent.</p></div></div>
+                    <button type="button" class="btn-add-entry" data-add-entry="education"><i class="bi bi-plus-lg"></i> Add Education</button>
+                </div>
+                <div class="repeatable-list" data-entry-list="education">
+                    <div class="repeatable-entry" data-entry>
+                        <div class="entry-toolbar"><strong>Education 1</strong><button type="button" class="btn-remove-entry" data-remove-entry aria-label="Remove education"><i class="bi bi-trash"></i> Remove</button></div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label>Qualification</label><input type="text" name="education_qualification" class="form-control" placeholder="e.g. Bachelor of Computer Science"></div>
+                            <div class="col-md-6"><label>Institution</label><input type="text" name="education_institution" class="form-control" placeholder="e.g. Universiti Teknologi MARA"></div>
+                            <div class="col-md-6"><label>Graduation Year</label><input type="text" name="education_year" class="form-control" placeholder="e.g. 2026"></div>
+                            <div class="col-md-6"><label>CGPA <span class="optional-label">Optional</span></label><input type="text" name="education_cgpa" class="form-control" placeholder="e.g. 3.65 / 4.00"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="resume-form-section repeatable-section" data-section="project">
+                <div class="section-heading-row">
+                    <div class="section-heading"><span>06</span><div><h3>Projects</h3><p>Showcase academic, personal, or professional work.</p></div></div>
+                    <button type="button" class="btn-add-entry" data-add-entry="project"><i class="bi bi-plus-lg"></i> Add Project</button>
+                </div>
+                <div class="repeatable-list" data-entry-list="project">
+                    <div class="repeatable-entry" data-entry>
+                        <div class="entry-toolbar"><strong>Project 1</strong><button type="button" class="btn-remove-entry" data-remove-entry aria-label="Remove project"><i class="bi bi-trash"></i> Remove</button></div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label>Project Name</label><input type="text" name="project_name" class="form-control" placeholder="e.g. HireMatch Job Recommendation Portal"></div>
+                            <div class="col-md-6"><label>Technologies</label><input type="text" name="project_technologies" class="form-control" placeholder="Django, PostgreSQL, Scikit-learn"></div>
+                            <div class="col-12"><label>Description</label><textarea name="project_description" class="form-control" rows="3" placeholder="Explain the problem, your contribution, and the outcome."></textarea></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="resume-form-section">
+                <div class="section-heading"><span>07</span><div><h3>Additional Information</h3><p>Add certifications and languages where relevant.</p></div></div>
+                <div class="row g-3">
+                    <div class="col-md-6"><label for="certifications">Certifications</label><textarea id="certifications" name="certifications" class="form-control" rows="3" placeholder="AWS Cloud Practitioner&#10;Google Data Analytics Certificate"></textarea></div>
+                    <div class="col-md-6"><label for="languages">Languages</label><textarea id="languages" name="languages" class="form-control" rows="3" placeholder="Malay - Native&#10;English - Professional proficiency"></textarea></div>
+                </div>
+            </section>
+
+            <div class="resume-submit-row">
+                <div><strong>Ready to generate?</strong><span>Your PDF will download automatically.</span></div>
+                <button type="submit" class="btn-resume"><i class="bi bi-file-earmark-arrow-down"></i> Generate Resume PDF</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content resume-guide-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="guideModalTitle">Resume Writing Tips</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Keep the resume concise, use relevant keywords, and describe achievements with clear action statements.</p>
+                <ul>
+                    <li>Use accurate contact details and professional links.</li>
+                    <li>List recent experience and education first.</li>
+                    <li>Include skills that are relevant to the roles you are targeting.</li>
+                    <li>Review spelling and dates before generating the PDF.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- 🔥 GUIDE MODAL -->
-<div class="modal fade" id="guideModal" tabindex="-1">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold">How to Use Resume Generator</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body text-center">
-        <img src="{% static 'portal/images/resume_guide.png' %}" 
-             class="img-fluid rounded shadow">
-      </div>
-
+<template id="workEntryTemplate">
+    <div class="repeatable-entry" data-entry>
+        <div class="entry-toolbar"><strong>Experience</strong><button type="button" class="btn-remove-entry" data-remove-entry><i class="bi bi-trash"></i> Remove</button></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label>Job Title</label><input type="text" name="work_job_title" class="form-control" placeholder="e.g. Software Developer Intern"></div>
+            <div class="col-md-6"><label>Company</label><input type="text" name="work_company" class="form-control" placeholder="e.g. ABC Technology Sdn. Bhd."></div>
+            <div class="col-md-6"><label>Start Date</label><input type="text" name="work_start" class="form-control" placeholder="e.g. Jan 2025"></div>
+            <div class="col-md-6"><label>End Date</label><input type="text" name="work_end" class="form-control" placeholder="e.g. Jun 2025 or Present"></div>
+            <div class="col-12"><label>Responsibilities or Achievements</label><textarea name="work_responsibilities" class="form-control" rows="3" placeholder="Describe your contributions using clear action statements."></textarea></div>
+        </div>
     </div>
-  </div>
-</div>
+</template>
 
+<template id="educationEntryTemplate">
+    <div class="repeatable-entry" data-entry>
+        <div class="entry-toolbar"><strong>Education</strong><button type="button" class="btn-remove-entry" data-remove-entry><i class="bi bi-trash"></i> Remove</button></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label>Qualification</label><input type="text" name="education_qualification" class="form-control" placeholder="e.g. Bachelor of Computer Science"></div>
+            <div class="col-md-6"><label>Institution</label><input type="text" name="education_institution" class="form-control" placeholder="e.g. Universiti Teknologi MARA"></div>
+            <div class="col-md-6"><label>Graduation Year</label><input type="text" name="education_year" class="form-control" placeholder="e.g. 2026"></div>
+            <div class="col-md-6"><label>CGPA <span class="optional-label">Optional</span></label><input type="text" name="education_cgpa" class="form-control" placeholder="e.g. 3.65 / 4.00"></div>
+        </div>
+    </div>
+</template>
+
+<template id="projectEntryTemplate">
+    <div class="repeatable-entry" data-entry>
+        <div class="entry-toolbar"><strong>Project</strong><button type="button" class="btn-remove-entry" data-remove-entry><i class="bi bi-trash"></i> Remove</button></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label>Project Name</label><input type="text" name="project_name" class="form-control" placeholder="e.g. HireMatch Job Recommendation Portal"></div>
+            <div class="col-md-6"><label>Technologies</label><input type="text" name="project_technologies" class="form-control" placeholder="Django, PostgreSQL, Scikit-learn"></div>
+            <div class="col-12"><label>Description</label><textarea name="project_description" class="form-control" rows="3" placeholder="Explain the problem, your contribution, and the outcome."></textarea></div>
+        </div>
+    </div>
+</template>
+
+<script>
+document.querySelectorAll('[data-add-entry]').forEach(button => {
+    button.addEventListener('click', () => {
+        const type = button.dataset.addEntry;
+        const template = document.getElementById(`${type}EntryTemplate`);
+        const list = document.querySelector(`[data-entry-list="${type}"]`);
+        list.appendChild(template.content.cloneNode(true));
+        updateEntryLabels(list, type);
+    });
+});
+
+document.addEventListener('click', event => {
+    const removeButton = event.target.closest('[data-remove-entry]');
+    if (!removeButton) return;
+    const list = removeButton.closest('.repeatable-list');
+    const entry = removeButton.closest('[data-entry]');
+    if (list.querySelectorAll('[data-entry]').length === 1) {
+        entry.querySelectorAll('input, textarea').forEach(field => field.value = '');
+        return;
+    }
+    const type = list.dataset.entryList;
+    entry.remove();
+    updateEntryLabels(list, type);
+});
+
+function updateEntryLabels(list, type) {
+    const names = {work: 'Experience', education: 'Education', project: 'Project'};
+    list.querySelectorAll('[data-entry]').forEach((entry, index) => {
+        entry.querySelector('.entry-toolbar strong').textContent = `${names[type]} ${index + 1}`;
+    });
+}
+</script>
 {% endblock %}

@@ -385,3 +385,99 @@
     position: relative;
     z-index: 1;
 }
+
+/* Job seeker search controls */
+.job-filter-grid {
+    align-items: end;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: minmax(360px, 1fr) 150px 145px 145px 175px 46px;
+}
+
+.filter-control {
+    min-width: 0;
+}
+
+.filter-control > label {
+    color: #425b7f;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 0 7px 2px;
+}
+
+.job-filter-grid .form-control,
+.job-filter-grid .form-select,
+.clear-filter-btn {
+    height: 50px;
+}
+
+.salary-input-wrap {
+    position: relative;
+}
+
+.salary-input-wrap > span {
+    color: #60728d;
+    font-size: 13px;
+    font-weight: 700;
+    left: 14px;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.salary-input-wrap .form-control {
+    padding-left: 44px;
+}
+
+.clear-filter-btn {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #d5dfeb;
+    border-radius: 10px;
+    color: #5e7089;
+    display: inline-flex;
+    font-size: 18px;
+    justify-content: center;
+    text-decoration: none;
+    width: 46px;
+}
+
+.clear-filter-btn:hover {
+    background: #16325c;
+    border-color: #16325c;
+    color: #ffffff;
+}
+
+.salary-filter-error {
+    color: #b42318;
+    font-size: 13px;
+    grid-column: 1 / -1;
+    margin: -2px 0 0;
+}
+
+@media (max-width: 1199px) {
+    .job-filter-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .filter-search-control {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 767px) {
+    .job-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-search-control {
+        grid-column: auto;
+    }
+
+    .clear-filter-btn {
+        width: 100%;
+    }
+}

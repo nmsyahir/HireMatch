@@ -65,29 +65,18 @@
 
     <div class="search-box shadow-sm">
 
-        <form
-            method="GET"
-            id="searchForm"
-            class="row g-3 align-items-center"
-        >
-
-            <div class="col-lg-6">
+        <form method="GET" id="searchForm" class="job-filter-grid" novalidate>
+            <div class="filter-control filter-search-control">
+                <label for="jobSearch">Search</label>
                 <div class="job-search-field">
                     <i class="bi bi-search" aria-hidden="true"></i>
-                <input
-                    type="text"
-                    name="q"
-                    id="jobSearch"
-                    class="form-control"
-                    placeholder="Search jobs, companies, skills, or locations"
-                    value="{{ query }}"
-                    autocomplete="off"
-                >
+                    <input type="text" name="q" id="jobSearch" class="form-control" placeholder="Search jobs, companies, skills, or locations" value="{{ query }}" autocomplete="off">
                 </div>
             </div>
 
-            <div class="col-lg-2 col-md-4">
-                <select name="job_type" class="form-select">
+            <div class="filter-control">
+                <label for="jobType">Job Type</label>
+                <select name="job_type" id="jobType" class="form-select">
                     <option value="" {% if not job_type %}selected{% endif %}>All Job Types</option>
                     <option value="Full-Time" {% if job_type == 'Full-Time' %}selected{% endif %}>Full-Time</option>
                     <option value="Part-Time" {% if job_type == 'Part-Time' %}selected{% endif %}>Part-Time</option>
@@ -95,18 +84,37 @@
                 </select>
             </div>
 
-            <div class="col-lg-2 col-md-4">
-                <input type="number" name="salary_min" class="form-control" placeholder="Min salary" value="{{ salary_min }}" step="100">
+            <div class="filter-control">
+                <label for="salaryMin">Minimum Salary</label>
+                <div class="salary-input-wrap">
+                    <span>RM</span>
+                    <input type="number" name="salary_min" id="salaryMin" class="form-control" placeholder="0" value="{{ salary_min }}" step="100" min="0">
+                </div>
             </div>
 
-            <div class="col-lg-2 col-md-4">
-                <input type="number" name="salary_max" class="form-control" placeholder="Max salary" value="{{ salary_max }}" step="100">
+            <div class="filter-control">
+                <label for="salaryMax">Maximum Salary</label>
+                <div class="salary-input-wrap">
+                    <span>RM</span>
+                    <input type="number" name="salary_max" id="salaryMax" class="form-control" placeholder="Any" value="{{ salary_max }}" step="100" min="0">
+                </div>
             </div>
 
-            <div class="col-12 d-none">
-                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            <div class="filter-control">
+                <label for="jobSort">Sort By</label>
+                <select name="sort" id="jobSort" class="form-select">
+                    <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+                    <option value="salary_low" {% if sort == 'salary_low' %}selected{% endif %}>Salary: Low to High</option>
+                    <option value="salary_high" {% if sort == 'salary_high' %}selected{% endif %}>Salary: High to Low</option>
+                    <option value="title" {% if sort == 'title' %}selected{% endif %}>Job Title: A-Z</option>
+                    {% if query %}<option value="relevance" {% if sort == 'relevance' %}selected{% endif %}>Relevance</option>{% endif %}
+                </select>
             </div>
 
+            {% if query or job_type or salary_min or salary_max or sort != 'newest' %}
+            <a href="{% url 'user_jobs' %}" class="clear-filter-btn" title="Clear Filters" aria-label="Clear Filters"><i class="bi bi-x-lg"></i></a>
+            {% endif %}
+            <p id="salaryFilterError" class="salary-filter-error" {% if not salary_error %}hidden{% endif %}>{{ salary_error }}</p>
         </form>
 
     </div>
@@ -186,10 +194,10 @@
 
                     {% endif %}
 
-                    {% if job.salary %}
+                    {% if job.salary_display %}
 
                     <span class="job-tag salary-tag">
-                        <i class="bi bi-cash-stack salary-icon"></i> {{ job.salary }}
+                        <i class="bi bi-cash-stack salary-icon"></i> {{ job.salary_display }}
                     </span>
 
                     {% endif %}
@@ -301,33 +309,46 @@
 
         if (focusedInput) {
             focusedInput.focus();
-            focusedInput.setSelectionRange(
-                focusedInput.value.length,
-                focusedInput.value.length
-            );
+            if (focusedInput.type === 'text') {
+                focusedInput.setSelectionRange(focusedInput.value.length, focusedInput.value.length);
+            }
         }
 
         sessionStorage.removeItem('lastFocusedSearch');
     }
 
+    const salaryMin = document.getElementById('salaryMin');
+    const salaryMax = document.getElementById('salaryMax');
+    const salaryError = document.getElementById('salaryFilterError');
+
+    function salaryRangeIsValid() {
+        const minimum = salaryMin.value === '' ? null : Number(salaryMin.value);
+        const maximum = salaryMax.value === '' ? null : Number(salaryMax.value);
+        const invalid = minimum !== null && maximum !== null && minimum > maximum;
+        salaryError.textContent = invalid ? 'Minimum Salary cannot be greater than Maximum Salary.' : '';
+        salaryError.hidden = !invalid;
+        return !invalid;
+    }
+
+    function submitSearch() {
+        if (!salaryRangeIsValid()) return;
+        if (document.activeElement === document.getElementById('jobSearch')) {
+            sessionStorage.setItem('lastFocusedSearch', 'jobSearch');
+        }
+        form.submit();
+    }
+
     function autoSearch() {
         clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
-            if (document.activeElement && document.activeElement.id) {
-                sessionStorage.setItem(
-                    'lastFocusedSearch',
-                    document.activeElement.id
-                );
-            }
-
-            form.submit();
-        }, 400);
+        timeout = setTimeout(submitSearch, 500);
     }
 
     form.querySelectorAll('input, select').forEach(control => {
-        const eventName = control.tagName === 'SELECT' ? 'change' : 'input';
-        control.addEventListener(eventName, autoSearch);
+        if (control.tagName === 'SELECT') {
+            control.addEventListener('change', submitSearch);
+        } else {
+            control.addEventListener('input', autoSearch);
+        }
     });
 
     const saveForms = document.querySelectorAll('.save-job-form');

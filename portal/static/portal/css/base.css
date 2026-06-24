@@ -171,10 +171,13 @@ main {
 
 select.form-select {
     cursor: pointer;
-    appearance: auto;
-    -webkit-appearance: menulist;
-    background-image: none;
-    padding-right: 2.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2316325c' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    background-size: 13px 10px;
+    padding-right: 3rem !important;
 }
 
 .public-page-header.public-page-header {
@@ -718,4 +721,85 @@ select.form-select {
 .empty-state-illustration.compact {
     margin-bottom: 12px;
     width: 130px;
+}
+
+/* Shared empty states */
+.system-empty-state,
+.empty-state,
+.empty-saved-state,
+.empty-job-state,
+.empty-chat-list {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e5ebf3;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 390px;
+    padding: 64px 24px !important;
+    text-align: center;
+    width: 100%;
+}
+
+.system-empty-state img,
+.empty-state img,
+.empty-saved-state img,
+.empty-job-state img,
+.empty-chat-list img,
+.empty-img,
+.empty-saved-img,
+.empty-job-img,
+.empty-state-illustration {
+    display: block;
+    height: 150px !important;
+    margin: 0 auto 22px !important;
+    max-width: 210px !important;
+    object-fit: contain;
+    width: 210px !important;
+}
+
+.system-empty-state h3,
+.system-empty-state h4,
+.empty-state h3,
+.empty-state h4,
+.empty-saved-state h3,
+.empty-saved-state h4,
+.empty-job-state h3,
+.empty-job-state h4,
+.empty-chat-list h3,
+.empty-chat-list h4 {
+    color: #16325c !important;
+    font-size: 23px !important;
+    font-weight: 700 !important;
+    line-height: 1.25;
+    margin: 0 0 10px !important;
+}
+
+.system-empty-state p,
+.empty-state p,
+.empty-saved-state p,
+.empty-job-state p,
+.empty-chat-list p {
+    color: #6f7d90 !important;
+    font-size: 15px !important;
+    line-height: 1.65;
+    margin: 0 0 24px !important;
+    max-width: 520px;
+}
+
+.compact-empty-state {
+    border: 0;
+    min-height: 310px;
+}
+
+.compact-empty-state img {
+    height: 120px !important;
+    width: 170px !important;
+}
+
+.empty-state-illustration.compact {
+    height: 100px !important;
+    margin-bottom: 12px !important;
+    width: 130px !important;
 }

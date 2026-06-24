@@ -144,7 +144,7 @@ Dashboard
         </div>
 
         <!-- QUICK ACTIONS -->
-        <div class="row g-4">
+        <div class="row g-4 mb-5">
 
             <!-- SEARCH JOBS -->
             <div class="col-md-4">
@@ -249,6 +249,50 @@ Dashboard
             </div>
 
         </div>
+
+        <section class="dashboard-action-card table-card jobseeker-recent-card">
+            <div class="recent-applications-heading">
+                <div>
+                    <span>Application tracking</span>
+                    <h5>Recent Applications</h5>
+                </div>
+                <a href="{% url 'my_applications' %}">View All Applications <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            {% if recent_applications %}
+            <div class="table-responsive">
+                <table class="table align-middle recent-applications-table">
+                    <thead>
+                        <tr>
+                            <th>Job</th>
+                            <th>Company</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in recent_applications %}
+                        <tr>
+                            <td><strong>{{ application.job.title }}</strong></td>
+                            <td>{{ application.job.company.name }}</td>
+                            <td>{{ application.applied_at|date:"d M Y" }}</td>
+                            <td><span class="application-status-text status-{{ application.status }}">{{ application.get_status_display }}</span></td>
+                            <td class="text-end"><a href="{% url 'job_detail' application.job.id %}" class="recent-view-link">View</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="system-empty-state compact-empty-state">
+                <img src="{% static 'portal/images/undraw_empty_4zx0.svg' %}" alt="No applications yet">
+                <h4>No applications yet</h4>
+                <p>Your recent job applications will appear here.</p>
+                <a href="{% url 'user_jobs' %}" class="btn-empty-primary">Search Jobs</a>
+            </div>
+            {% endif %}
+        </section>
 
     </div>
 

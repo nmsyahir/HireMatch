@@ -635,6 +635,100 @@ class HireMatchFlowTests(TestCase):
         nonmatching_response = self.client.get(reverse('public_jobs'), {'salary_min': '4600'})
         self.assertNotContains(nonmatching_response, legacy_job.title)
 
+    def test_job_seeker_salary_filter_uses_numeric_salary_fields(self):
+        numeric_job = Job.objects.create(
+            company=self.company,
+            title='Numeric Salary Role',
+            description='Current salary data',
+            salary='Outdated text',
+            salary_min=4000,
+            salary_max=6000,
+            status='open',
+        )
+        legacy_job = Job.objects.create(
+            company=self.company,
+            title='Legacy Job Seeker Role',
+            description='No numeric salary data',
+            salary='RM1,000 - RM2,000',
+            status='open',
+        )
+        self.login_as(self.seeker)
+
+        response = self.client.get(reverse('user_jobs'), {
+            'salary_min': '1000',
+            'salary_max': '2700',
+        })
+
+        self.assertNotContains(response, numeric_job.title)
+        self.assertNotContains(response, legacy_job.title)
+
+    def test_job_seeker_search_sorting_and_salary_display(self):
+        lower_job = Job.objects.create(
+            company=self.company,
+            title='Alpha Analyst',
+            description='Python reporting',
+            salary='Old salary value',
+            salary_min=2500,
+            salary_max=3500,
+            status='open',
+        )
+        higher_job = Job.objects.create(
+            company=self.company,
+            title='Zulu Engineer',
+            description='Python engineering',
+            salary_min=5000,
+            salary_max=7000,
+            status='open',
+        )
+        self.login_as(self.seeker)
+
+        response = self.client.get(reverse('user_jobs'), {'sort': 'salary_low'})
+        jobs = list(response.context['jobs'])
+        self.assertLess(jobs.index(lower_job), jobs.index(higher_job))
+        self.assertContains(response, 'RM2,500 - RM3,500')
+        self.assertContains(response, 'Salary: Low to High')
+
+    def test_resume_generator_creates_structured_pdf(self):
+        response = self.client.post(reverse('resume_generator'), {
+            'first_name': 'Aisyah',
+            'last_name': 'Rahman',
+            'professional_title': 'Software Developer',
+            'email': 'aisyah@example.com',
+            'phone': '+60111111111',
+            'location': 'Kuala Lumpur',
+            'summary': 'Developer focused on reliable web applications.',
+            'technical_skills': 'Python, Django, SQL',
+            'soft_skills': 'Communication, teamwork',
+            'work_job_title': ['Developer Intern'],
+            'work_company': ['Alpha Tech'],
+            'work_start': ['Jan 2025'],
+            'work_end': ['Jun 2025'],
+            'work_responsibilities': ['Built and tested Django features.'],
+            'education_qualification': ['Bachelor of Computer Science'],
+            'education_institution': ['Example University'],
+            'education_year': ['2026'],
+            'education_cgpa': ['3.70'],
+            'project_name': ['HireMatch'],
+            'project_technologies': ['Django, PostgreSQL'],
+            'project_description': ['Developed a job recommendation portal.'],
+            'certifications': 'Cloud Fundamentals',
+            'languages': 'Malay, English',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertTrue(response.content.startswith(b'%PDF'))
+
+    def test_dashboard_shows_five_most_recent_applications(self):
+        self.login_as(self.seeker)
+        Application.objects.create(user=self.seeker, job=self.job)
+
+        response = self.client.get(reverse('dashboard'))
+
+        self.assertContains(response, 'Recent Applications')
+        self.assertContains(response, self.job.title)
+        self.assertContains(response, 'View All Applications')
+
     def test_manage_resume_shows_improved_guidance(self):
         Resume.objects.create(
             user=self.seeker,

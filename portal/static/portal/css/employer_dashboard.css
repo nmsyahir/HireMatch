@@ -318,6 +318,83 @@
     color: #1d4ed8;
 }
 
+.jobseeker-recent-card {
+    height: auto;
+    overflow: hidden;
+    padding: 0;
+}
+
+.recent-applications-heading {
+    align-items: center;
+    border-bottom: 1px solid #e7edf6;
+    display: flex;
+    justify-content: space-between;
+    padding: 21px 24px;
+}
+
+.recent-applications-heading span {
+    color: #7a8799;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.recent-applications-heading h5 {
+    color: #16325c;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.recent-applications-heading > a {
+    color: #1f4e8c;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.recent-applications-heading > a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.recent-applications-table th:first-child,
+.recent-applications-table td:first-child {
+    padding-left: 24px;
+}
+
+.recent-applications-table th:last-child,
+.recent-applications-table td:last-child {
+    padding-right: 24px;
+}
+
+.application-status-text {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.application-status-text.status-pending { color: #a16207; }
+.application-status-text.status-accepted { color: #15803d; }
+.application-status-text.status-rejected { color: #be123c; }
+.application-status-text.status-withdrawn { color: #64748b; }
+
+.recent-view-link {
+    border: 1px solid #1f4e8c;
+    border-radius: 7px;
+    color: #1f4e8c;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    text-decoration: none;
+}
+
+.recent-view-link:hover {
+    background: #1f4e8c;
+    color: #ffffff;
+}
+
 .quick-action-card {
     position: relative;
 }

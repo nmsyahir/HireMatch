@@ -10,11 +10,18 @@
 {% block content %}
 
 <section class="jobs-header">
-    <div class="container py-5 text-white">
-        <h1 class="fw-bold">Messages</h1>
-        <p class="mb-0">View your conversations with employers.</p>
+    <div class="container py-5 text-white chat-header-content">
+        <div>
+            <h1 class="fw-bold">Messages</h1>
+            <p class="mb-0">View your conversations with employers.</p>
+        </div>
+        <button type="button" class="chat-guidelines-btn" data-bs-toggle="modal" data-bs-target="#chatGuidelinesModal" title="Chat Safety Tips" aria-label="Open Chat Guidelines">
+            <i class="bi bi-info-circle"></i>
+        </button>
     </div>
 </section>
+
+{% include 'portal/chat_guidelines_modal.html' %}
 
 <div class="chat-list-section py-5">
     <div class="container">
