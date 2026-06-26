@@ -588,10 +588,12 @@ def job_detail(request, job_id):
         return redirect('login')
 
     #check applied
-    applied = Application.objects.filter(
+    application = Application.objects.filter(
         user_id=user_id,
         job_id=job_id
-    ).exists()
+    ).first()
+
+    applied = application is not None
 
     #check saved
     saved = SavedJob.objects.filter(
@@ -610,7 +612,7 @@ def job_detail(request, job_id):
         'applied': applied,
         'saved': saved,
         'has_resume': has_resume,
-        'can_chat': user.role == 'job_seeker' and applied,
+        'can_chat': user.role == 'job_seeker' and application is not None and application.status != 'withdrawn',
         'base_template': 'portal/employer_base.html' if user.role == 'employer' else 'portal/jobseeker_base.html',
         'company_exists': employer_has_company(user) if user.role == 'employer' else False,
     })
@@ -3269,15 +3271,19 @@ def chat_room(
 
         return redirect('login')
 
-    current_user = UserProfile.objects.get(
+    current_user = UserProfile.objects.filter(
         id=request.session.get('user_id')
-    )
+    ).first()
 
-    other_user = UserProfile.objects.get(
+    other_user = UserProfile.objects.filter(
         id=user_id
-    )
+    ).first()
 
     job = Job.objects.select_related('company__employer').filter(id=job_id).first()
+
+    if not current_user or not other_user or not job:
+        messages.error(request, "Conversation not found.")
+        return redirect('chat_list')
 
     if not can_access_job_chat(current_user, other_user, job):
         messages.error(request, "You do not have access to this conversation.")
