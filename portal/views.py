@@ -357,7 +357,7 @@ def open_jobs_queryset():
     )
 
 
-def filter_jobs_by_salary(jobs, requested_min, requested_max, allow_legacy_salary=True):
+def filter_jobs_by_salary(jobs, requested_min, requested_max, allow_legacy_salary=True, strict_range=False):
     minimum = int(requested_min) if requested_min.isdigit() else None
     maximum = int(requested_max) if requested_max.isdigit() else None
     if minimum is None and maximum is None:
@@ -384,10 +384,16 @@ def filter_jobs_by_salary(jobs, requested_min, requested_max, allow_legacy_salar
         if job_minimum is None or job_maximum is None:
             continue
 
-        if minimum is not None and job_maximum < minimum:
-            continue
-        if maximum is not None and job_minimum > maximum:
-            continue
+        if strict_range:
+            if minimum is not None and job_minimum < minimum:
+                continue
+            if maximum is not None and job_maximum > maximum:
+                continue
+        else:
+            if minimum is not None and job_maximum < minimum:
+                continue
+            if maximum is not None and job_minimum > maximum:
+                continue
         matching_ids.append(job.id)
 
     return jobs.filter(id__in=matching_ids)
@@ -680,6 +686,7 @@ def user_jobs(request):
             salary_min,
             salary_max,
             allow_legacy_salary=False,
+            strict_range=True,
         )
 
     if sort == 'salary_low':

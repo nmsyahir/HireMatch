@@ -636,6 +636,22 @@ class HireMatchFlowTests(TestCase):
         self.assertNotContains(nonmatching_response, legacy_job.title)
 
     def test_job_seeker_salary_filter_uses_numeric_salary_fields(self):
+        matching_job = Job.objects.create(
+            company=self.company,
+            title='Contained Salary Role',
+            description='Salary fully inside selected range',
+            salary_min=2500,
+            salary_max=3500,
+            status='open',
+        )
+        over_max_job = Job.objects.create(
+            company=self.company,
+            title='Over Maximum Salary Role',
+            description='Salary exceeds selected maximum',
+            salary_min=2800,
+            salary_max=4200,
+            status='open',
+        )
         numeric_job = Job.objects.create(
             company=self.company,
             title='Numeric Salary Role',
@@ -656,9 +672,11 @@ class HireMatchFlowTests(TestCase):
 
         response = self.client.get(reverse('user_jobs'), {
             'salary_min': '1000',
-            'salary_max': '2700',
+            'salary_max': '4000',
         })
 
+        self.assertContains(response, matching_job.title)
+        self.assertNotContains(response, over_max_job.title)
         self.assertNotContains(response, numeric_job.title)
         self.assertNotContains(response, legacy_job.title)
 
